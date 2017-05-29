@@ -19,7 +19,7 @@ class WC_API_Dev {
 	/**
 	 * Minimum version needed to run this version of the API.
 	 */
-	const WC_MIN_VERSION = '3.0';
+	const WC_MIN_VERSION = '3.0.0';
 
 	/**
 	 * Class Instance.
@@ -31,7 +31,7 @@ class WC_API_Dev {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
-		$this->check_dependencies();
+		add_action( 'plugins_loaded', array( $this, 'check_dependencies' ) );
 	}
 
 	/**
@@ -45,11 +45,11 @@ class WC_API_Dev {
 	/**
 	 * Makes sure WooCommerce is installed and up to date.
 	 */
-	private function check_dependencies() {
-		if ( ! class_exists( 'woocommerce' ) || ! version_compare(
+	public function check_dependencies() {
+		if ( ! class_exists( 'woocommerce' ) || version_compare(
 			get_option( 'woocommerce_db_version' ),
 			WC_API_Dev::WC_MIN_VERSION,
-			'>='
+			'<='
 		) ) {
 			add_action( 'admin_notices', array( $this, 'dependency_notice' ) );
 		}
