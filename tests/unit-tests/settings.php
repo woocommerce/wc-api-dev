@@ -752,4 +752,21 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'US:OR', $setting['options'] );
 	}
 
+	/**
+	 * Test getting the currency setting and making sure that its symbol and label are returned separately in the option response.
+	 */
+	public function test_get_currency_setting() {
+		wp_set_current_user( $this->user );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/settings/general/woocommerce_currency' ) );
+		$data = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 'woocommerce_currency', $data['id'] );
+		$this->assertEquals( array(
+			'label' => 'United States dollar',
+			'symbol' => '&#36;',
+		), $data['options']['USD'] );
+	}
+
 }
