@@ -67,6 +67,20 @@ class WC_REST_Dev_Data_Controller extends WC_REST_Controller {
 	}
 
 	/**
+	 * Check whether a given request has permission to read site settings.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function get_item_permissions_check( $request ) {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot view this resource.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Return the list of data resources.
 	 *
 	 * @since  3.1.0
@@ -83,6 +97,10 @@ class WC_REST_Dev_Data_Controller extends WC_REST_Controller {
 			array(
 				'slug'        => 'countries',
 				'description' => __( 'List of supported states in a given country.', 'woocommerce' ),
+			),
+			array(
+				'slug'        => 'currencies',
+				'description' => __( 'List of supported currencies.', 'woocommerce' ),
 			),
 		);
 
