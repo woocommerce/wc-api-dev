@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: v3
+ * Version: 0.3.0
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
