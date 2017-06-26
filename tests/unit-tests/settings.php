@@ -28,7 +28,9 @@ class Settings extends WC_REST_Unit_Test_Case {
 	public function test_register_routes() {
 		$routes = $this->server->get_routes();
 		$this->assertArrayHasKey( '/wc/v3/settings', $routes );
+		$this->assertArrayHasKey( '/wc/v3/settings/batch', $routes );
 		$this->assertArrayHasKey( '/wc/v3/settings/(?P<group_id>[\w-]+)', $routes );
+		$this->assertArrayHasKey( '/wc/v3/settings/(?P<group_id>[\w-]+)/batch', $routes );
 		$this->assertArrayHasKey( '/wc/v3/settings/(?P<group_id>[\w-]+)/(?P<id>[\w-]+)', $routes );
 	}
 
@@ -285,6 +287,28 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'both', $data['update'][0]['value'] );
 		$this->assertEquals( 'both', get_option( 'woocommerce_shop_page_display' ) );
 
+		// test bulk settings batch endpoint
+		$request = new WP_REST_Request( 'POST', '/wc/v3/settings/batch' );
+		$request->set_body_params( array(
+			'update' => array(
+				array(
+					'group_id' => 'test',
+					'id'       => 'woocommerce_shop_page_display',
+					'value'     => 'subcategories',
+				),
+				array(
+					'group_id' => 'products',
+					'id'       => 'woocommerce_dimension_unit',
+					'value'     => 'yd',
+				),
+			),
+		) );
+		$response = $this->server->dispatch( $request );
+		$data = $response->get_data();
+		$this->assertEquals( 'subcategories', $data['update'][0]['value'] );
+		$this->assertEquals( 'yd', $data['update'][1]['value'] );
+		$this->assertEquals( 'yd', get_option( 'woocommerce_dimension_unit' ) );
+
 		// test updating one, but making sure the other value stays the same
 		$request = new WP_REST_Request( 'POST', '/wc/v3/settings/test/batch' );
 		$request->set_body_params( array(
@@ -539,10 +563,10 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( array(
 			'id'          => 'subject',
 			'label'       => 'Subject',
-			'description' => 'This controls the email subject line. Leave blank to use the default subject: <code>[{site_title}] New customer order ({order_number}) - {order_date}</code>.',
+			'description' => 'Available placeholders: <code>{site_title}, {order_date}, {order_number}</code>',
 			'type'        => 'text',
 			'default'     => '',
-			'tip'         => 'This controls the email subject line. Leave blank to use the default subject: <code>[{site_title}] New customer order ({order_number}) - {order_date}</code>.',
+			'tip'         => 'Available placeholders: <code>{site_title}, {order_date}, {order_number}</code>',
 			'value'       => '',
 		), $setting );
 
@@ -557,10 +581,10 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( array(
 			'id'          => 'subject',
 			'label'       => 'Subject',
-			'description' => 'This controls the email subject line. Leave blank to use the default subject: <code>[{site_title}] New customer order ({order_number}) - {order_date}</code>.',
+			'description' => 'Available placeholders: <code>{site_title}, {order_date}, {order_number}</code>',
 			'type'        => 'text',
 			'default'     => '',
-			'tip'         => 'This controls the email subject line. Leave blank to use the default subject: <code>[{site_title}] New customer order ({order_number}) - {order_date}</code>.',
+			'tip'         => 'Available placeholders: <code>{site_title}, {order_date}, {order_number}</code>',
 			'value'       => 'This is my subject',
 		), $setting );
 
