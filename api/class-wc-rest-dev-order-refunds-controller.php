@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @package WooCommerce/API
  */
-class WC_REST_Dev_Order_Refunds_Controller extends WC_REST_DEV_Orders_Controller {
+class WC_REST_Dev_Order_Refunds_Controller extends WC_REST_Order_Refunds_Controller {
 
 	/**
 	 * Endpoint namespace.
