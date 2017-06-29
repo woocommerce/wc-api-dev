@@ -3,7 +3,7 @@ Contributors: automattic, woothemes
 Tags: woocommerce, rest-api, api
 Requires at least: 4.6
 Tested up to: 4.8
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,12 @@ This section describes how to install the plugin and get it working.
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 == Changelog ==
+
+= 0.6.0 =
+* Fix value default return on settings endpoints
+* Fix broken variation image set
+* Add a method supports response to payment methods
+* Added the ability to keep this plugin up to date
 
 = 0.5.0 =
 * Added a /settings/batch endpoint
