@@ -50,6 +50,7 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 			'enabled'            => true,
 			'method_title'       => 'Check payments',
 			'method_description' => 'Allows check payments. Why would you take checks in this day and age? Well you probably would not, but it does allow you to make test purchases for testing order emails and the success pages.',
+			'method_supports'    => array( 'products' ),
 			'settings'           => array_diff_key( $this->get_settings( 'WC_Gateway_Cheque' ), array( 'enabled' => false, 'description' => false ) ),
 			'_links' => array(
 				'self'       => array(
@@ -97,6 +98,7 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 			'enabled'            => true,
 			'method_title'       => 'PayPal',
 			'method_description' => 'PayPal Standard sends customers to PayPal to enter their payment information. PayPal IPN requires fsockopen/cURL support to update order statuses after payment. Check the <a href="http://example.org/wp-admin/admin.php?page=wc-status">system status</a> page for more details.',
+			'method_supports'    => array( 'products', 'refunds' ),
 			'settings'           => array_diff_key( $this->get_settings( 'WC_Gateway_Paypal' ), array( 'enabled' => false, 'description' => false ) ),
 		), $paypal );
 	}
@@ -252,7 +254,7 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 		$data = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 8, count( $properties ) );
+		$this->assertEquals( 9, count( $properties ) );
 		$this->assertArrayHasKey( 'id', $properties );
 		$this->assertArrayHasKey( 'title', $properties );
 		$this->assertArrayHasKey( 'description', $properties );
@@ -260,6 +262,7 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'enabled', $properties );
 		$this->assertArrayHasKey( 'method_title', $properties );
 		$this->assertArrayHasKey( 'method_description', $properties );
+		$this->assertArrayHasKey( 'method_supports', $properties );
 		$this->assertArrayHasKey( 'settings', $properties );
 	}
 
