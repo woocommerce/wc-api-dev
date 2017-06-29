@@ -130,8 +130,7 @@ class WC_REST_Dev_Product_Variations_Controller extends WC_REST_Product_Variatio
 		// Thumbnail.
 		if ( isset( $request['image'] ) ) {
 			if ( is_array( $request['image'] ) ) {
-				$image = $request['image'];
-				$variation = $this->set_product_images( $variation, array( $image ) );
+				$variation = $this->set_variation_image( $variation, $request['image'] );
 			} else {
 				$variation->set_image_id( '' );
 			}
@@ -337,6 +336,48 @@ class WC_REST_Dev_Product_Variations_Controller extends WC_REST_Product_Variatio
 		}
 
 		return;
+	}
+
+	/**
+	 * Set variation image.
+	 *
+	 * @throws WC_REST_Exception REST API exceptions.
+	 * @param  WC_Product_Variation $variation Variation instance.
+	 * @param  array                $image    Image data.
+	 * @return WC_Product_Variation
+	 */
+	protected function set_variation_image( $variation, $image ) {
+		$attachment_id = isset( $image['id'] ) ? absint( $image['id'] ) : 0;
+
+		if ( 0 === $attachment_id && isset( $image['src'] ) ) {
+			$upload = wc_rest_upload_image_from_url( esc_url_raw( $image['src'] ) );
+
+			if ( is_wp_error( $upload ) ) {
+				if ( ! apply_filters( 'woocommerce_rest_suppress_image_upload_error', false, $upload, $variation->get_id(), array( $image ) ) ) {
+					throw new WC_REST_Exception( 'woocommerce_variation_image_upload_error', $upload->get_error_message(), 400 );
+				}
+			}
+
+			$attachment_id = wc_rest_set_uploaded_image_as_attachment( $upload, $variation->get_id() );
+		}
+
+		if ( ! wp_attachment_is_image( $attachment_id ) ) {
+			throw new WC_REST_Exception( 'woocommerce_variation_invalid_image_id', sprintf( __( '#%s is an invalid image ID.', 'woocommerce' ), $attachment_id ), 400 );
+		}
+
+		$variation->set_image_id( $attachment_id );
+
+		// Set the image alt if present.
+		if ( ! empty( $image['alt'] ) ) {
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', wc_clean( $image['alt'] ) );
+		}
+
+		// Set the image name if present.
+		if ( ! empty( $image['name'] ) ) {
+			wp_update_post( array( 'ID' => $attachment_id, 'post_title' => $image['name'] ) );
+		}
+
+		return $variation;
 	}
 
 	/**

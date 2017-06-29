@@ -196,6 +196,43 @@ class Product_Variations_API extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test setting variation image from ID. (src is tested in `test_update_variation`)
+	 */
+	public function test_set_variation_image_from_id() {
+		wp_set_current_user( $this->user );
+
+		$orig_file = dirname( __FILE__ ) . '/../../assets/icon-128x128.png';
+		$this->test_file = '/tmp/icon.png';
+		copy( $orig_file, $this->test_file );
+
+		$request = new WP_REST_Request( 'POST', '/wp/v2/media' );
+		$request->set_header( 'Content-Type', 'image/png' );
+		$request->set_header( 'Content-Disposition', 'attachment; filename=icon.png' );
+		$request->set_body( file_get_contents( $this->test_file ) );
+		$response = $this->server->dispatch( $request );
+		$image = $response->get_data();
+
+		$product      = WC_Helper_Product::create_variation_product();
+		$children     = $product->get_children();
+		$variation_id = $children[0];
+
+		$request = new WP_REST_Request( 'PUT', '/wc/v3/products/' . $product->get_id() . '/variations/' . $variation_id );
+		$request->set_body_params( array(
+			'image'       => array( 'id' => $image['id'] ),
+		) );
+		$response  = $this->server->dispatch( $request );
+		$variation = $response->get_data();
+
+		$this->assertNotEmpty( $variation['image'] );
+		$this->assertEquals( $image['id'], $variation['image']['id'] );
+
+		$product->delete( true );
+		if ( file_exists( $this->test_file ) ) {
+			unlink( $this->test_file );
+		}
+	}
+
+	/**
 	 * Test updating a single variation without permission.
 	 *
 	 * @since 3.0.0
