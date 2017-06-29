@@ -10,6 +10,16 @@
  * Tested up to: 4.7
  */
 
+// This plugin auto updates by default. To disable, set `WC_API_DEV_AUTO_UPDATE` to false.
+if ( ! defined( 'WC_API_DEV_AUTO_UPDATE' ) ){
+	define( 'WC_API_DEV_AUTO_UPDATE', true );
+}
+
+if ( defined( 'WC_API_DEV_AUTO_UPDATE' ) && true === WC_API_DEV_AUTO_UPDATE ) {
+	include_once( plugin_dir_path( __FILE__ ) . 'auto-update.php' );
+	new WC_API_Dev_Updater;
+}
+
 /**
  * WC API Dev
  * Loads a development version of the WooCommerce REST API.
