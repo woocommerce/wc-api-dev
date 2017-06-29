@@ -116,6 +116,51 @@ class WC_REST_Dev_Setting_Options_Controller extends WC_REST_Setting_Options_Con
 	}
 
 	/**
+	 * Get all settings in a group.
+	 *
+	 * @param string $group_id Group ID.
+	 * @return array|WP_Error
+	 */
+	public function get_group_settings( $group_id ) {
+		if ( empty( $group_id ) ) {
+			return new WP_Error( 'rest_setting_setting_group_invalid', __( 'Invalid setting group.', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		$settings = apply_filters( 'woocommerce_settings-' . $group_id, array() );
+
+		if ( empty( $settings ) ) {
+			return new WP_Error( 'rest_setting_setting_group_invalid', __( 'Invalid setting group.', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		$filtered_settings = array();
+		foreach ( $settings as $setting ) {
+			$option_key = $setting['option_key'];
+			$setting    = $this->filter_setting( $setting );
+			$default    = isset( $setting['default'] ) ? $setting['default'] : '';
+			// Get the option value
+			if ( is_array( $option_key ) ) {
+				$option           = get_option( $option_key[0] );
+				$setting['value'] = isset( $option[ $option_key[1] ] ) ? $option[ $option_key[1] ] : $default;
+			} else {
+				$admin_setting_value = WC_Admin_Settings::get_option( $option_key, $default );
+				$setting['value']    = $admin_setting_value;
+			}
+
+			if ( 'multi_select_countries' === $setting['type'] ) {
+				$setting['options'] = WC()->countries->get_countries();
+				$setting['type']    = 'multiselect';
+			} elseif ( 'single_select_country' === $setting['type'] ) {
+				$setting['type']    = 'select';
+				$setting['options'] = $this->get_countries_and_states();
+			}
+
+			$filtered_settings[] = $setting;
+		}
+
+		return $filtered_settings;
+	}
+
+	/**
 	 * Get the settings schema, conforming to JSON Schema.
 	 *
 	 * @return array
