@@ -147,14 +147,29 @@ class WC_Tests_REST_System_Status extends WC_REST_Unit_Test_Case {
 			$term_response[ $term->slug ] = strtolower( $term->name );
 		}
 
+		$notices = WC_Admin_Notices::get_notices();
+		$install_key = array_search( 'install', $notices );
+		unset( $notices[ $install_key ] );
+		update_option( 'woocommerce_admin_notices', $notices );
+
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/system_status' ) );
 		$data     = $response->get_data();
 		$settings = (array) $data['settings'];
 
-		$this->assertEquals( 11, count( $settings ) );
+		$this->assertEquals( 12, count( $settings ) );
 		$this->assertEquals( ( 'yes' === get_option( 'woocommerce_api_enabled' ) ), $settings['api_enabled'] );
 		$this->assertEquals( get_woocommerce_currency(), $settings['currency'] );
 		$this->assertEquals( $term_response, $settings['taxonomies'] );
+		$this->assertEquals( true, $settings['setup_wizard_ran'] );
+
+		$notices[] = 'install';
+		update_option( 'woocommerce_admin_notices', $notices );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/system_status' ) );
+		$data     = $response->get_data();
+		$settings = (array) $data['settings'];
+
+		$this->assertEquals( false, $settings['setup_wizard_ran'] );
 	}
 
 	/**
