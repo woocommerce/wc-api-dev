@@ -3,7 +3,7 @@ Contributors: automattic, woothemes
 Tags: woocommerce, rest-api, api
 Requires at least: 4.6
 Tested up to: 4.8
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ This section describes how to install the plugin and get it working.
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 == Changelog ==
+
+= 0.7.0 =
+* Fix - disable jetpack sync during rest api requests to avoid slow responses
 
 = 0.6.0 =
 * Fix value default return on settings endpoints
