@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: 0.6.0
+ * Version: 0.7.0
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
@@ -117,6 +117,9 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-system-status-tools-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
+
+		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
+		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
 	}
 
 	/**
