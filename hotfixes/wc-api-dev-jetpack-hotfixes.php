@@ -22,7 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 function wc_api_dev_jetpack_sync_sender_should_load( $sender_should_load ) {
-	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+	$starts_with = '/wp-json/wc/v';
+	if ( $starts_with === substr( $_SERVER[ 'REQUEST_URI' ], 0, strlen( $starts_with ) ) ) {
 		$sender_should_load = false;
 	}
 
