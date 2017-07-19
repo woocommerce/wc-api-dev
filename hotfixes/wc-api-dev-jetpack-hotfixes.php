@@ -16,15 +16,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  * See also https://core.trac.wordpress.org/ticket/41358#ticket
  * See also https://github.com/Automattic/jetpack/pull/7482
  *
- * This can be removed once we have either of the two fixes above released
+ * This can be removed once we have either of the two fixes above released. The first
+ * trigger string is typical of a direct request (e.g. ala Postman) and the second
+ * trigger string is typical of a request from WordPress.com for Jetpack.
  * 
  * See also https://github.com/woocommerce/woocommerce/pull/16158
+ *
+ * @since 0.7.0
+ * @version 0.7.1
  */
 
 function wc_api_dev_jetpack_sync_sender_should_load( $sender_should_load ) {
-	$starts_with = '/wp-json/wc/v';
-	if ( $starts_with === substr( $_SERVER[ 'REQUEST_URI' ], 0, strlen( $starts_with ) ) ) {
-		$sender_should_load = false;
+	$trigger_strings = array( '/wp-json/wc/v', '/?rest_route=%2Fwc%2Fv' );
+
+	error_log( $_SERVER[ 'REQUEST_URI' ] );
+	foreach( $trigger_strings as $trigger_string ) {
+		if ( $trigger_string === substr( $_SERVER[ 'REQUEST_URI' ], 0, strlen( $trigger_string ) ) ) {
+			$sender_should_load = false;
+			break;
+		}
 	}
 
 	return $sender_should_load;
