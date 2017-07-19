@@ -29,7 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wc_api_dev_jetpack_sync_sender_should_load( $sender_should_load ) {
 	$trigger_strings = array( '/wp-json/wc/v', '/?rest_route=%2Fwc%2Fv' );
 
-	error_log( $_SERVER[ 'REQUEST_URI' ] );
 	foreach( $trigger_strings as $trigger_string ) {
 		if ( $trigger_string === substr( $_SERVER[ 'REQUEST_URI' ], 0, strlen( $trigger_string ) ) ) {
 			$sender_should_load = false;
