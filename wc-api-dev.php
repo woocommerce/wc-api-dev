@@ -120,6 +120,7 @@ class WC_API_Dev {
 
 		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
 		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
+		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-site-title.php' );
 	}
 
 	/**

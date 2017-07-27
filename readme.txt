@@ -27,6 +27,7 @@ This section describes how to install the plugin and get it working.
 
 = 0.8.0 =
 * Update orders endpoint to accept multiple statuses
+* Fix - Email subject and footers becoming out of sync
 
 = 0.7.1 =
 * Fix - add another URI to watch for when disabling sync during API requests
