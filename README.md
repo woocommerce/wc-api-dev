@@ -25,9 +25,3 @@ When creating a public release, do the following:
 * Post your changelog notes in the description of the release.
 * Create & attach a binary containing a zip for the latest plugin version. The binary name should be `wc-api-dev.zip`. Please double check that the folder inside the archive is also called `wc-api-dev` and not something like `wc-api-dev-###hash` or `wc-api-dev-master`. You can create this binary by downloading a zip from GitHub, unzipping, and renaming the folder.
 * Publish your release.
-
-## Translation
-
-For strings located in API endpoints, use `woocommerce` as your text-domain. These endpoints will at some point be merged back into WooCommerce Core.
-
-For other changes (such as the `hotfixes/` folder, which is being used to power an in-development interface for managing stores on WordPress.com) that are not to be merged into core, you can use `wc-api-dev` as your text-domain. These will most likely be split-out into a separate plugin soon.

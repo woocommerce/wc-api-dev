@@ -25,10 +25,6 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
-= 0.8.1 =
-* Fix - Don't auto enable the cheque payment method.
-* Adds a new config constant (WC_API_DEV_ENABLE_HOTFIXES) to make it easy to disable hotfixes.
-
 = 0.8.0 =
 * Update orders endpoint to accept multiple statuses
 * Fix - Email subject and footers becoming out of sync
