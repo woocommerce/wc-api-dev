@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: 0.8.0
+ * Version: 0.8.1
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
@@ -13,6 +13,10 @@
 // This plugin auto updates by default. To disable, set `WC_API_DEV_AUTO_UPDATE` to false.
 if ( ! defined( 'WC_API_DEV_AUTO_UPDATE' ) ){
 	define( 'WC_API_DEV_AUTO_UPDATE', true );
+}
+
+if ( ! defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) ){
+	define( 'WC_API_DEV_ENABLE_HOTFIXES', true );
 }
 
 if ( defined( 'WC_API_DEV_AUTO_UPDATE' ) && true === WC_API_DEV_AUTO_UPDATE ) {
@@ -119,8 +123,11 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
 
 		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
-		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
-		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-site-title.php' );
+		if ( defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) && true === WC_API_DEV_ENABLE_HOTFIXES ) {
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-site-title.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-cheque-defaults.php' );
+		}
 	}
 
 	/**
