@@ -40,7 +40,7 @@ class WC_API_Dev_Updater {
 				foreach ( $response as $entry ) {
 					if ( false === ( bool ) $entry['prerelease'] ) {
 						$gh_response = $entry;
-						set_transient( 'wc_api_dev_gh_response', $entry, 2 * HOUR_IN_SECONDS );
+						set_transient( 'wc_api_dev_gh_response', $entry, 12 * HOUR_IN_SECONDS );
 						break;
 					}
 				}
