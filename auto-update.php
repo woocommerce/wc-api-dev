@@ -33,48 +33,47 @@ class WC_API_Dev_Updater {
 	 * Fetch the first non pre-release zip from GitHub releases and store the response for later use.
 	 */
 	private function maybe_fetch_github_response() {
-		if ( is_null( $this->github_response ) ) {
+		if ( false === ( $gh_response = get_transient( 'wc_api_dev_gh_response' ) ) ) {
 			$request_uri = 'https://api.github.com/repos/woocommerce/wc-api-dev/releases';
 			$response    = json_decode( wp_remote_retrieve_body( wp_remote_get( $request_uri ) ), true );
 			if ( is_array( $response ) ) {
 				foreach ( $response as $entry ) {
 					if ( false === ( bool ) $entry['prerelease'] ) {
-						$this->github_response = $entry;
+						$gh_response = $entry;
+						set_transient( 'wc_api_dev_gh_response', $entry, 2 * HOUR_IN_SECONDS );
 						break;
 					}
 				}
 			}
 		}
+		$this->github_response = $gh_response;
 	}
 
 	/**
 	 * Add our plugin to the list of plugins to update, if we find the version is out of date.
 	 */
 	public function modify_transient( $transient ) {
-		if ( property_exists( $transient, 'checked' ) && $transient->checked ) {
-			$checked = $transient->checked;
-			$this->maybe_fetch_github_response();
+		$this->maybe_fetch_github_response();
 
-			if (
-				empty( $this->github_response['tag_name'] ) ||
-				empty( $checked[ $this->file ] ) ||
-				empty( $this->github_response['zipball_url'] )
-			) {
-				return $transient;
-			}
-
-			$out_of_date = version_compare( $this->github_response['tag_name'], $checked[ $this->file ], '>' );
-			if ( $out_of_date ) {
-				$plugin = array(
-					'url'         => 'https://github.com/woocommerce/wc-api-dev',
-					'plugin'      => $this->file,
-					'slug'        => 'wc-api-dev',
-					'package'     => $this->github_response['zipball_url'],
-					'new_version' => $this->github_response['tag_name']
-				);
-				$transient->response[ $this->file ] = (object) $plugin;
-			}
+		if (
+			empty( $this->github_response['tag_name'] ) ||
+			empty( $this->github_response['zipball_url'] )
+		) {
+			return $transient;
 		}
+
+		$out_of_date = version_compare( $this->github_response['tag_name'], WC_API_Dev::CURRENT_VERSION, '>' );
+		if ( $out_of_date ) {
+			$plugin = array(
+				'url'         => 'https://github.com/woocommerce/wc-api-dev',
+				'plugin'      => $this->file,
+				'slug'        => 'wc-api-dev',
+				'package'     => $this->github_response['zipball_url'],
+				'new_version' => $this->github_response['tag_name']
+			);
+			$transient->response[ $this->file ] = (object) $plugin;
+		}
+
 		return $transient;
 	}
 
@@ -128,6 +127,10 @@ class WC_API_Dev_Updater {
 		$wp_filesystem->move( $result['destination'], $install_directory );
 		$result['destination'] = $install_directory;
 		activate_plugin( $this->file );
+
+		// Prevent double notice being displayed. At this point we don't need the plugin injected.
+		remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'modify_transient' ), 10 );
+
 		return $result;
 	}
 }

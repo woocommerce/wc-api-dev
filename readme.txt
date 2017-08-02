@@ -3,7 +3,7 @@ Contributors: automattic, woothemes
 Tags: woocommerce, rest-api, api
 Requires at least: 4.6
 Tested up to: 4.8
-Stable tag: 0.8.0
+Stable tag: 0.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ This section describes how to install the plugin and get it working.
 == Changelog ==
 
 = 0.8.1 =
+* Fix - Fix auto plugin update logic
 * Fix - Don't auto enable the cheque payment method.
 * Adds a new config constant (WC_API_DEV_ENABLE_HOTFIXES) to make it easy to disable hotfixes.
 
