@@ -21,6 +21,7 @@ When creating a public release, do the following:
 
 * Add a changelog and bump the version in `readme.txt`.
 * Bump the version in the plugin header.
+* Bump the version constant.
 * The tag & name of the release should both match the new version number.
 * Post your changelog notes in the description of the release.
 * Create & attach a binary containing a zip for the latest plugin version. The binary name should be `wc-api-dev.zip`. Please double check that the folder inside the archive is also called `wc-api-dev` and not something like `wc-api-dev-###hash` or `wc-api-dev-master`. You can create this binary by downloading a zip from GitHub, unzipping, and renaming the folder.
