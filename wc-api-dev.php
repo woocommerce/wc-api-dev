@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: 0.8.2
+ * Version: 0.8.3
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
@@ -33,7 +33,7 @@ class WC_API_Dev {
 	/**
 	 * Current version of the API plugin.
 	 */
-	const CURRENT_VERSION = '0.8.2';
+	const CURRENT_VERSION = '0.8.3';
 
 	/**
 	 * Minimum version needed to run this version of the API.
@@ -131,6 +131,7 @@ class WC_API_Dev {
 		if ( defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) && true === WC_API_DEV_ENABLE_HOTFIXES ) {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-site-title.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-order-url.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-cheque-defaults.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-paypal-defaults.php' );
 		}
