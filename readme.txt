@@ -25,6 +25,11 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 0.8.4 =
+* Remove auto-install via github as it is not reliable.
+* Add composer autoload support.
+* Add check for existing installs to avoid conflicts.
+
 = 0.8.3 =
 * Fix - Update order link in order details emails.
 
