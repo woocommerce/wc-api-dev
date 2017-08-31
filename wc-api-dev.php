@@ -10,13 +10,21 @@
  * Tested up to: 4.7
  */
 
-// If the WC_API_Dev class already exists, the conventionally installed
-// plugin must exist. Do nothing in order to avoid conflicts.
+if ( ! file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) ) {
+	// No WooCommerce installed, we don't need this.
+	return;
+}
+
+// If the wc-api-dev plugin already exists in the conventionally installed
+// directory, do nothing in order to avoid conflicts.
 //
 // TODO: Remove this after we are sure that all sites have the previously
 // installed instances removed.
-if ( class_exists( 'WC_API_Dev' ) ) {
-	return;
+if ( file_exists( WP_PLUGIN_DIR . '/wc-api-dev/wc-api-dev.php' ) ) {
+	if ( WP_PLUGIN_DIR . '/wc-api-dev/' !== plugin_dir_path( __FILE__ ) ) {
+		// wc-api-dev is already installed conventionally, exiting to avoid conflict.
+		return;
+	}
 }
 
 if ( ! defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) ){
