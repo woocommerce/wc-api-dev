@@ -8,7 +8,7 @@ class WC_API_Dev {
 	/**
 	 * Current version of the API plugin.
 	 */
-	const CURRENT_VERSION = '0.8.4';
+	const CURRENT_VERSION = '0.8.6';
 
 	/**
 	 * Minimum version needed to run this version of the API.
@@ -25,37 +25,30 @@ class WC_API_Dev {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
-		add_action( 'plugins_loaded', array( $this, 'check_dependencies' ) );
 	}
 
 	/**
 	 * Loads API includes and registers routes.
 	 */
 	function init() {
-		$this->includes();
-		add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
+		if ( $this->is_woocommerce_valid() ) {
+			$this->includes();
+			add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
+		}
 	}
 
 	/**
 	 * Makes sure WooCommerce is installed and up to date.
 	 */
-	public function check_dependencies() {
-		if ( ! class_exists( 'woocommerce' ) || version_compare(
-			get_option( 'woocommerce_db_version' ),
-			WC_API_Dev::WC_MIN_VERSION,
-			'<='
-		) ) {
-			add_action( 'admin_notices', array( $this, 'dependency_notice' ) );
-		}
-	}
-
-	/**
-	 * Displays an admin notice if WooCommerce is not enabled or not the correct version.
-	 */
-	public function dependency_notice() {
-		if ( current_user_can( 'activate_plugins' ) ) {
-			echo '<div class="error"><p><strong>' . __( 'The WooCommerce plugin is inactive.' ) . '</strong> ' . sprintf( __( 'The WooCommerce plugin must be active and least version %s for the WooCommerce API Dev plugin to work. %sPlease install and activate WooCommerce%s.' ), WC_API_Dev::WC_MIN_VERSION, '<a href="' .esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' ) . '</p></div>';
-		}
+	public function is_woocommerce_valid() {
+		return (
+			class_exists( 'woocommerce' ) &&
+			version_compare(
+				get_option( 'woocommerce_db_version' ),
+				WC_API_Dev::WC_MIN_VERSION,
+				'>='
+			)
+		);
 	}
 
 	/**

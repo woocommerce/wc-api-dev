@@ -1,6 +1,6 @@
 {
 	"name": "woocommerce/wc-api-dev",
-	"version": "v0.8.5",
+	"version": "v0.8.6",
 	"autoload": {
 		"files": [ "wc-api-dev.php" ]
 	}
