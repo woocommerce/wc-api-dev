@@ -71,7 +71,7 @@ class WC_API_Dev_Unit_Tests_Bootstrap {
 	 */
 	public function load_wc_api_dev() {
 		define( 'WC_API_DEV_ENABLE_HOTFIXES', false );
-		require_once( $this->plugin_dir . '/wc-api-dev.php' );
+		require_once( $this->plugin_dir . '/wc-api-dev-class.php' );
 	}
 
 	/**
