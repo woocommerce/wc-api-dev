@@ -1,0 +1,158 @@
+<?php
+/**
+ * Customizer Guided Tour Class
+ *
+ * @author   WooThemes
+ * @since    0.8.7
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
+
+	class Customizer_NUX_Guided_Tour {
+		/**
+		 * Setup class.
+		 *
+		 * @since 0.8.7
+		 */
+		public function __construct() {
+			add_action( 'admin_init', array( $this, 'customizer' ) );
+		}
+
+		/**
+		 * Customizer.
+		 *
+		 * @since 0.8.7
+		 */
+		public function customizer() {
+			global $pagenow;
+
+			if ( 'customize.php' === $pagenow && isset( $_GET['wc-api-dev-tutorial'] ) ) {
+				add_action( 'customize_controls_enqueue_scripts',      array( $this, 'customize_scripts' ) );
+				add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ) );
+				$this->isStorefrontActivated();
+			}
+		}
+
+		public function isStorefrontActivated() {
+			$current_theme = wp_get_theme();
+
+			if ( 'Storefront' == $current_theme->get( 'Name' ) ) {
+				$redirect_url = add_query_arg( array(
+					'sf_guided_tour' => '1',
+					'sf_tasks' => 'homepage',
+					'theme' => $_GET['theme'],
+				), admin_url( '/customize.php' ) );
+
+				wp_redirect( $redirect_url );
+				exit;
+			}
+		}
+
+		/**
+		 * Customizer enqueues.
+		 *
+		 * @since 0.8.7
+		 */
+		public function customize_scripts() {
+			global $storefront_version;
+
+			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+			wp_enqueue_style( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), $storefront_version, 'all' );
+
+			wp_enqueue_script( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer' . $suffix . '.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
+
+			wp_localize_script( 'wc-api-dev-guided-tour', '_wpCustomizeWcApiDevGuidedTourSteps', $this->guided_tour_steps() );
+		}
+
+		/**
+		 * Template for steps.
+		 *
+		 * @since 0.8.7
+		 */
+		public function print_templates() {
+			?>
+			<script type="text/html" id="tmpl-wc-api-guided-tour-step">
+				<div class="sf-guided-tour-step">
+					<# if ( data.title ) { #>
+						<h2>{{ data.title }}</h2>
+					<# } #>
+					{{{ data.message }}}
+					<# if ( data.alt_step ) { #>
+						<a class="sf-nux-button sf-nux-alt-button {{ data.alt_step.className }}" href="#">
+							{{ data.alt_step.button_text }}
+						</a>
+					<# } #>
+					<# if ( data.button_text ) { #>
+						<a class="sf-nux-button sf-nux-primary-button {{ data.className }}" href="#">
+							{{ data.button_text }}
+						</a>
+					<# } #>
+
+					<# if ( data.show_skip ) { #>
+						<a class="sf-guided-tour-skip" href="#">
+							<?php esc_attr_e( 'Skip this step', 'wc-api-dev' ); ?>
+						</a>
+					<# } #>
+				</div>
+			</script>
+			<?php
+		}
+
+		/**
+		 * Guided tour steps.
+		 *
+		 * @since 0.8.7
+		 */
+		public function guided_tour_steps() {
+			$steps = array();
+
+			$steps[] = array(
+				'title'       => __( 'Customize Your Store', 'storefront' ),
+				'message'     => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer', 'storefront' ),
+				'button_text' => __( 'I\'ll keep my current theme', 'storefront' ),
+				'section'     => '#customize-info',
+				'className'   => 'sf-button-secondary',
+				'alt_step'    => array(
+					'button_text' => __( 'I\'ll try Storefront!', 'storefront' ),
+					'action'      => 'expandThemes',
+					'message'     => __( 'Click the thumbnail to get started with Storefront', 'storefront' ),
+					'section'     => '#customize-control-theme_storefront .theme-screenshot',
+				)
+			);
+
+			// Determine what the next step should be
+			$needsLogo = ! has_custom_logo();
+			$logoBullet = $needsLogo ? __( '<li>Add your logo</li>', 'storefront' ) : '';
+
+			$steps[] = array(
+				'message'     => __( 'Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>' . $logoBullet . '<li>Add Shop pages to your menus</li><li>Set your shope page as the homepage</li></ul><p>', 'storefront' ),
+				'button_text' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
+				'section'     => '#accordion-section-themes',
+				'alt_step'    => array(
+					'button_text' => __( 'I\'ll figure it out for myself', 'storefront' ),
+					'className'   => 'sf-button-secondary',
+					'action'      => 'exit',
+				)
+			);
+
+			if ( $needsLogo ) {
+				$steps[] = array(
+					'title'   => __( 'Add your logo', 'storefront' ),
+					'button_text' => 'Next',
+					'message' => __( 'Open the Site Identity Panel, then click the \'Select Logo\' button to upload your logo.', 'storefront' ),
+					'section' => 'title_tagline',
+				);
+			}
+
+			return $steps;
+		}
+	}
+
+endif;
+
+return new Customizer_NUX_Guided_Tour();

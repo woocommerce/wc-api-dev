@@ -15,6 +15,8 @@ class WC_API_Dev {
 	 */
 	const WC_MIN_VERSION = '3.0.0';
 
+	public static $plugin_url = null;
+
 	/**
 	 * Class Instance.
 	 */
@@ -103,6 +105,9 @@ class WC_API_Dev {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-cheque-defaults.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-paypal-defaults.php' );
 		}
+
+		// Classes that are not related to the API.
+		include_once( dirname( __FILE__ ) . '/inc/class-customizer-guided-tour.php' );
 	}
 
 	/**
@@ -159,6 +164,7 @@ class WC_API_Dev {
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
+			self::$plugin_url = plugin_dir_url( __FILE__ );
 			self::$instance = new self();
 		}
 
