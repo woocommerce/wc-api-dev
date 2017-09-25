@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: 0.8.6
+ * Version: 0.8.7
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
@@ -33,4 +33,3 @@ if ( ! defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) ){
 
 // The coast is clear, load the class.
 include_once( dirname( __FILE__ ) . '/wc-api-dev-class.php' );
-
