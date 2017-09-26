@@ -22,7 +22,6 @@
 		currentStep: -1,
 
 		init: function() {
-			console.log( 'WcApiDevGuidedTour.init()' );
 			this._setupUI();
 		},
 
@@ -91,7 +90,6 @@
 				case 'expandThemes':
 					var nextStep, themePanel;
 					themePanel = api.section.instance( 'themes' );
-					console.log( themePanel );
 					themePanel.expand();
 					
 					nextStep = step.alt_step;
@@ -115,9 +113,11 @@
 			}
 
 			this.$container.removeClass( 'sf-inside-section' );
-
 			if ( expandedSection && step.section === expandedSection.id ) {
 				this._moveContainer( $( expandedSection.container[1] ).find( '.customize-section-title' ) );
+				this.$container.addClass( 'sf-inside-section' );
+			} else if ( expandedPanel && step.panel === expandedPanel.id ) {
+				this._moveContainer( $( expandedPanel.container[1] ).find( step.panelSection ) );
 				this.$container.addClass( 'sf-inside-section' );
 			} else if ( false === expandedSection && false === expandedPanel ) {
 				if ( this._isTourHidden() ) {
@@ -193,10 +193,23 @@
 				return;
 			}
 
-			this._closeAllSections();
-
 			// Get next step
 			step = this._getNextStep();
+
+			// Does this have a custom action?
+			if ( step.action ) {
+				switch ( step.action ) {
+					case 'addLogo':
+						api.section.instance('title_tagline').expand();
+					break;
+
+					case 'updateMenus':
+						api.panel('nav_menus').expand();
+					break;
+				}
+			} else {
+				this._closeAllSections();
+			}
 
 			this._renderStep( step );
 		},
@@ -275,7 +288,6 @@
 	};
 
 	$( document ).ready( function() {
-		console.log( 'ready' );
 		api.WcApiDevGuidedTour.init();
 	});
 } )( window.wp, jQuery );

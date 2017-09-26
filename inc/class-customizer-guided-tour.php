@@ -142,12 +142,22 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			if ( $needsLogo ) {
 				$steps[] = array(
-					'title'   => __( 'Add your logo', 'storefront' ),
-					'button_text' => 'Next',
-					'message' => __( 'Open the Site Identity Panel, then click the \'Select Logo\' button to upload your logo.', 'storefront' ),
-					'section' => 'title_tagline',
+					'title'       => __( 'Add your logo', 'storefront' ),
+					'action'      => 'addLogo',
+					'message'     => __( 'Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.', 'storefront' ),
+					'button_text' => __( 'Next', 'storefront' ),
+					'section'     => 'title_tagline',
 				);
 			}
+
+			$steps[] = array(
+				'message'     => __( 'Choose a menu to add shop pages to', 'storefront' ),
+				'section'     => '#sub-accordion-panel-nav_menus',
+				'panel'        => 'nav_menus',
+				'panelSection' => '.control-section-nav_menu',
+				'action'      => 'updateMenus',
+				'button_text' => __( 'Next', 'storefront' ),
+			);
 
 			return $steps;
 		}
