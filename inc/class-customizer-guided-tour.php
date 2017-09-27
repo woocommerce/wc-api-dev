@@ -126,7 +126,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			);
 
 			// Determine what the next step should be
-			$needsLogo = ! has_custom_logo();
+			$needsLogo = ! has_custom_logo() && current_theme_supports( 'custom-logo' );
 			$logoBullet = $needsLogo ? __( '<li>Add your logo</li>', 'storefront' ) : '';
 
 			$steps[] = array(
