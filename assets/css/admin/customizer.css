@@ -129,7 +129,6 @@ a.sf-nux-button[disabled]:active {
 }
 
 .sf-guided-tour .sf-guided-tour-step .sf-guided-tour-skip {
-	margin-left: 10px;
 	color: #00aadc;
 }
 
@@ -139,10 +138,6 @@ a.sf-nux-button[disabled]:active {
 
 .sf-guided-tour.sf-inside-section .sf-guided-tour-step a.sf-nux-button {
 	display: inline-block;
-}
-
-.sf-guided-tour.sf-inside-section .sf-guided-tour-step .sf-guided-tour-skip {
-	display: none;
 }
 
 .sf-guided-tour.sf-last-step .sf-guided-tour-step a.sf-nux-button {

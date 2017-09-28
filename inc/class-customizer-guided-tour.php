@@ -82,18 +82,18 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 						<h2>{{ data.title }}</h2>
 					<# } #>
 					{{{ data.message }}}
-					<# if ( data.alt_step ) { #>
-						<a class="sf-nux-button sf-nux-alt-button {{ data.alt_step.className }}" href="#">
-							{{ data.alt_step.button_text }}
+					<# if ( data.altStep ) { #>
+						<a class="sf-nux-button sf-nux-alt-button {{ data.altStep.className }}" href="#">
+							{{ data.altStep.buttonText }}
 						</a>
 					<# } #>
-					<# if ( data.button_text ) { #>
+					<# if ( data.buttonText ) { #>
 						<a class="sf-nux-button sf-nux-primary-button {{ data.className }}" href="#">
-							{{ data.button_text }}
+							{{ data.buttonText }}
 						</a>
 					<# } #>
 
-					<# if ( data.show_skip ) { #>
+					<# if ( data.showSkip ) { #>
 						<a class="sf-guided-tour-skip" href="#">
 							<?php esc_attr_e( 'Skip this step', 'wc-api-dev' ); ?>
 						</a>
@@ -114,11 +114,11 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			$steps[] = array(
 				'title'       => __( 'Customize Your Store', 'storefront' ),
 				'message'     => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer', 'storefront' ),
-				'button_text' => __( 'I\'ll keep my current theme', 'storefront' ),
+				'buttonText' => __( 'I\'ll keep my current theme', 'storefront' ),
 				'section'     => '#customize-info',
 				'className'   => 'sf-button-secondary',
-				'alt_step'    => array(
-					'button_text' => __( 'I\'ll try Storefront!', 'storefront' ),
+				'altStep'    => array(
+					'buttonText' => __( 'I\'ll try Storefront!', 'storefront' ),
 					'action'      => 'expandThemes',
 					'message'     => __( 'Click the thumbnail to get started with Storefront', 'storefront' ),
 					'section'     => '#customize-control-theme_storefront .theme-screenshot',
@@ -131,10 +131,10 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			$steps[] = array(
 				'message'     => __( 'Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>' . $logoBullet . '<li>Add Shop pages to your menus</li><li>Set your shope page as the homepage</li></ul><p>', 'storefront' ),
-				'button_text' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
+				'buttonText' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
 				'section'     => '#accordion-section-themes',
-				'alt_step'    => array(
-					'button_text' => __( 'I\'ll figure it out for myself', 'storefront' ),
+				'altStep'    => array(
+					'buttonText' => __( 'I\'ll figure it out for myself', 'storefront' ),
 					'className'   => 'sf-button-secondary',
 					'action'      => 'exit',
 				)
@@ -145,18 +145,28 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 					'title'       => __( 'Add your logo', 'storefront' ),
 					'action'      => 'addLogo',
 					'message'     => __( 'Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.', 'storefront' ),
-					'button_text' => __( 'Next', 'storefront' ),
+					'buttonText' => __( 'Next', 'storefront' ),
 					'section'     => 'title_tagline',
 				);
 			}
 
 			$steps[] = array(
-				'message'     => __( 'Choose a menu to add shop pages to', 'storefront' ),
-				'section'     => '#sub-accordion-panel-nav_menus',
+				'message'      => __( 'Choose a menu to add shop pages to', 'storefront' ),
+				'section'      => '#sub-accordion-panel-nav_menus',
 				'panel'        => 'nav_menus',
 				'panelSection' => '.control-section-nav_menu',
-				'action'      => 'updateMenus',
-				'button_text' => __( 'Next', 'storefront' ),
+				'action'       => 'updateMenus',
+				'showSkip'     => 'true',
+				'childSteps'   => array(
+					array(
+						'message'    => __( 'Here are the items currently added to your menu. Click the "Add Items" button.', 'storefront' ),
+						'section'    => '.add-new-menu-item',
+					),
+					array(
+						'message'    => __( 'Click on a page to add it to your menu. You can add links to your "shop", "cart", "checkout", and "my account" pages.', 'storefront' ),
+						'section'    => '#available-menu-items-post_type-page',
+					),
+				)
 			);
 
 			return $steps;

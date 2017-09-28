@@ -20,6 +20,7 @@
 	api.WcApiDevGuidedTour = {
 		$container: null,
 		currentStep: -1,
+		childTourStep: -1,
 
 		init: function() {
 			this._setupUI();
@@ -86,14 +87,14 @@
 			var step = this._getCurrentStep(),
 				self = this;
 
-			switch ( step.alt_step.action ) {
+			switch ( step.altStep.action ) {
 				case 'expandThemes':
 					var nextStep, themePanel;
 					themePanel = api.section.instance( 'themes' );
 					themePanel.expand();
 					
-					nextStep = step.alt_step;
-					delete( nextStep.button_text );
+					nextStep = step.altStep;
+					delete( nextStep.buttonText );
 					self._renderStep( nextStep );
 				break;
 
@@ -101,6 +102,10 @@
 					this._hideTour( true );
 				break;
 			}
+		},
+
+		_doChildTourStep: function() {
+
 		},
 
 		_adjustPosition: function() {
@@ -186,7 +191,7 @@
 		},
 
 		_showNextStep: function() {
-			var step, template;
+			var step, template, self = this;
 
 			if ( this._isLastStep() ) {
 				this._hideTour( true );
@@ -209,6 +214,45 @@
 				}
 			} else {
 				this._closeAllSections();
+			}
+
+			// Does this step have a child tour?
+			if ( step.childSteps ) {
+				
+				// Currently only the menu item has child steps, so we can
+				// add listeners here accordingly
+
+				// Listener for selection of a menu panel, Display Child Step 0.
+				api.state( 'expandedSection' ).bind( function() {
+					var menuControl, section = api.state( 'expandedSection' ).get();
+					
+					if ( 
+						! section.params ||
+						section.params.type !== 'nav_menu' ||
+						self.childTourStep !== -1
+					) {
+						return;
+					}
+					
+					// A nav_menu section has been selected, advance to next step
+					self.childTourStep = 0;
+					self._renderStep( step.childSteps[ self.childTourStep ] );
+
+					menuControl = api.Menus.getMenuControl( section.params.menu_id );
+
+					// so dirty.
+					// there is no core event emitted ( that i could find ) when the Add New Menu Item button is clicked.
+					// this is why we can't have nice things.
+					menuControl.container.find( '.add-new-menu-item' ).on( 'click', function( event ) {
+						// Adjust the left attribute of the container
+						var currentLeft = parseInt( self.$container.css( 'left' ) );
+						self.$container.css( 'left', ( $( '#available-menu-items-search' ).width() + currentLeft ) + 'px' );
+
+						self.childTourStep = 1;
+						self._renderStep( step.childSteps[ self.childTourStep ] );
+					} );
+				} );
+
 			}
 
 			this._renderStep( step );
@@ -261,7 +305,6 @@
 			if ( ! _.isUndefined( section ) ) {
 				return $( section.container[0] );
 			}
-
 			return $( pointTo );
 		},
 
