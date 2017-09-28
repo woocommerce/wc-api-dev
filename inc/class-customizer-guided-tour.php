@@ -78,6 +78,9 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			?>
 			<script type="text/html" id="tmpl-wc-api-guided-tour-step">
 				<div class="sf-guided-tour-step">
+					<a class="sf-guided-tour-close" href="#">
+						<span class="dashicons dashicons-no-alt"></span>
+					</a>
 					<# if ( data.title ) { #>
 						<h2>{{ data.title }}</h2>
 					<# } #>
@@ -114,11 +117,11 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			$steps[] = array(
 				'title'       => __( 'Customize Your Store', 'storefront' ),
 				'message'     => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer', 'storefront' ),
-				'buttonText' => __( 'I\'ll keep my current theme', 'storefront' ),
+				'buttonText'  => __( 'I\'ll keep my current theme', 'storefront' ),
 				'section'     => '#customize-info',
 				'className'   => 'sf-button-secondary',
-				'altStep'    => array(
-					'buttonText' => __( 'I\'ll try Storefront!', 'storefront' ),
+				'altStep'     => array(
+					'buttonText'  => __( 'I\'ll try Storefront!', 'storefront' ),
 					'action'      => 'expandThemes',
 					'message'     => __( 'Click the thumbnail to get started with Storefront', 'storefront' ),
 					'section'     => '#customize-control-theme_storefront .theme-screenshot',
@@ -130,7 +133,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			$logoBullet = $needsLogo ? __( '<li>Add your logo</li>', 'storefront' ) : '';
 
 			$steps[] = array(
-				'message'     => __( 'Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>' . $logoBullet . '<li>Add Shop pages to your menus</li><li>Set your shope page as the homepage</li></ul><p>', 'storefront' ),
+				'message'     => __( 'Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>' . $logoBullet . '<li>Add Shop pages to your menus</li><li>Set your shop page as the homepage</li></ul><p>', 'storefront' ),
 				'buttonText' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
 				'section'     => '#accordion-section-themes',
 				'altStep'    => array(
@@ -145,7 +148,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 					'title'       => __( 'Add your logo', 'storefront' ),
 					'action'      => 'addLogo',
 					'message'     => __( 'Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.', 'storefront' ),
-					'buttonText' => __( 'Next', 'storefront' ),
+					'buttonText'  => __( 'Next', 'storefront' ),
 					'section'     => 'title_tagline',
 				);
 			}
@@ -166,7 +169,39 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 						'message'    => __( 'Click on a page to add it to your menu. You can add links to your "shop", "cart", "checkout", and "my account" pages.', 'storefront' ),
 						'section'    => '#available-menu-items-post_type-page',
 					),
+					array(
+						'message'    => __( 'Add as many pages as you like. When you\'re happy, click "Next" and we\'ll setup your homepage.', 'storefront' ),
+						'section'    => '#available-menu-items-post_type-page',
+						'buttonText' => __( 'Next', 'storefront' ),
+					),
 				)
+			);
+
+			// See if setting homepage as static page is needed or not.
+			$show_on_front = get_option( 'show_on_front' );
+
+			if ( $show_on_front != 'page' ) {
+				$steps[] = array(
+					'message'      => __( 'If you would like to set your shop page as your homepage select the "A static page" option.', 'storefront' ),
+					'section'      => '#customize-control-show_on_front',
+					'action'       => 'resetChildTour',
+					'showSkip'     => true,
+					'suppressHide' => true,
+				);
+			}
+
+			$steps[] = array(
+				'message'      => __( 'Select which page you\'d like to set as your homepage. If you want your shop to be the focal point of your site then choosing the "Shop" page would be a good choice.', 'storefront' ),
+				'section'      => '#_customize-dropdown-pages-page_on_front',
+				'action'       => $show_on_front == 'page' ? 'resetChildTour' : 'verifyHomepage',
+				'showSkip'     => true,
+				'suppressHide' => $show_on_front == 'page' ? true : false,
+			);
+
+			$steps[] = array(
+				'message'      => __( 'Awesome! Your shop should be good to go. There\'s lots more to explore in the Customizer but remember to save and publish your changes.', 'storefront' ),
+				'section'      => '#sub-accordion-panel-nav_menus',
+				'showClose'    => 'true',
 			);
 
 			return $steps;

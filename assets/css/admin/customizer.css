@@ -228,3 +228,16 @@ a.sf-nux-button:active {
 	list-style: initial;
 	margin-left: 18px;
 }
+
+.sf-guided-tour-close {
+	display: none;
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.sf-show-close .sf-guided-tour-close {
+	display: block;
+}

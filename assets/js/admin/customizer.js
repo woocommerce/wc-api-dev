@@ -65,6 +65,10 @@
 
 				return false;
 			});
+
+			$( document ).on( 'click', '.sf-guided-tour-close', function() {
+				self._hideTour( true );
+			} );
 		},
 
 		_addListeners: function() {
@@ -81,6 +85,63 @@
 			window.onbeforeunload = function( e ) {
 				self._hideTour( true );
 			};
+
+			// Since the tour opens the api.Menus.availableMenuItemsPanel, we need to listen to this event too
+			// and the availableMenuItemsPanel doesn't fire standard panel state events.
+			$( '#customize-controls, .customize-section-back' ).on( 'click keydown', function( e ) {
+				var currentStep = self._getCurrentStep();
+
+				// If we aren't in the tour, or not in the updateMenus step and proper child steps, bail on this listener
+				if (
+					self._isTourHidden() ||
+					! currentStep.action ||
+					currentStep.action !== 'updateMenus' ||
+					self.childTourStep <= 0
+				) {
+					return;
+				}
+
+				// Logic copied from api.Menus.AvailableMenuItemsPanelView, it is okay for clicks on these targets to keep the panel open.
+				var isDeleteBtn = $( e.target ).is( '.item-delete, .item-delete *' ),
+					isAddNewBtn = $( e.target ).is( '.add-new-menu-item, .add-new-menu-item *' );
+				if ( ! isDeleteBtn && ! isAddNewBtn ) {
+					self._hideTour( true );
+				}
+			} );
+
+			// Listen to changes on Homepage Display Radio
+			$('#customize-control-show_on_front' ).on( 'change', function( e ) {
+				var currentStep = self._getCurrentStep();
+
+				if (
+					self._isTourHidden() ||
+					currentStep.section !== '#customize-control-show_on_front'
+				){
+					return;
+				}
+
+				if ( e && e.target && e.target.value === 'page' ) {
+					// User has toggled proceed to next step
+					self._showNextStep();
+				}
+			} );
+
+			// Listen to changes on Homepage Select
+			$('#_customize-dropdown-pages-page_on_front' ).on( 'change', function( e ) {
+				var currentStep = self._getCurrentStep();
+
+				if (
+					self._isTourHidden() ||
+					currentStep.section !== '#_customize-dropdown-pages-page_on_front'
+				){
+					return;
+				}
+
+				// Obvioulsy won't work for non enUs
+				if ( $(' #_customize-dropdown-pages-page_on_front option:selected' ).text() === 'Shop' ) {
+					self._showNextStep();
+				}
+			} );
 		},
 
 		_doAltStep: function() {
@@ -104,8 +165,77 @@
 			}
 		},
 
-		_doChildTourStep: function() {
+		_doChildSteps: function( step ) {
+			var self = this;
 
+			// Menus Child Tour.
+			if ( step.action && step.action === 'updateMenus' ) {
+				// Listener for selection of a menu panel, Display Child Step 0.
+				api.state( 'expandedSection' ).bind( function() {
+					var menuControl, section = api.state( 'expandedSection' ).get();
+					
+					if ( 
+						! section.params ||
+						section.params.type !== 'nav_menu' ||
+						self.childTourStep !== -1
+					) {
+						return;
+					}
+					
+					// A nav_menu section has been selected, advance to next step
+					self.childTourStep += 1;
+					self._renderStep( step.childSteps[ self.childTourStep ] );
+
+					menuControl = api.Menus.getMenuControl( section.params.menu_id );
+
+					// there is no core event emitted ( that i could find ) when the Add New Menu Item button is clicked.
+					menuControl.container.find( '.add-new-menu-item' ).on( 'click', function( event ) {
+						var currentStep, currentLeft = parseInt( self.$container.css( 'left' ) );
+						currentStep = self._getCurrentStep();
+
+						// If we aren't in the tour, or not in the updateMenus step, bail on this listener
+						if (
+							self._isTourHidden() ||
+							! currentStep.action ||
+							currentStep.action !== 'updateMenus'
+						) {
+							return;
+						}
+
+						// if this listener gets fired more than once, we should bail on the tour
+						if ( self.childTourStep > 0 ) {
+							self._hideTour();
+							return;
+						}
+
+						// Adjust the left attribute of the container
+						self.$container.css( 'left', ( $( '#available-menu-items-search' ).width() + currentLeft ) + 'px' );
+
+						self.childTourStep += 1;
+						self._renderStep( step.childSteps[ self.childTourStep ] );
+					} );
+
+					// Watch for clicks on pages in Menus.availableMenuItemsPanel
+					$( '#available-menu-items-post_type-page li.menu-item-tpl' ).on( 'click', function(){
+						var currentStep = self._getCurrentStep();
+
+						// If we aren't in the tour, or not in the updateMenus step, bail on this listener
+						if (
+							self._isTourHidden() ||
+							! currentStep.action ||
+							currentStep.action !== 'updateMenus'
+						) {
+							return;
+						}
+
+						self.childTourStep += 1;
+
+						if ( step.childSteps[ self.childTourStep ] ) {
+							self._renderStep( step.childSteps[ self.childTourStep ] );
+						}
+					} );
+				} );
+			}
 		},
 
 		_adjustPosition: function() {
@@ -132,7 +262,12 @@
 					this._moveContainer( selector );
 				}
 			} else {
-				this._hideTour();
+				// When deep in the menus, customize.state gets in a place where section and panel are both set
+				// and this logic gets triggered when moving to the next homepage step
+				// provide a way to short circuit it via the step config.
+				if ( ! step.suppressHide ) {
+					this._hideTour();
+				}
 			}
 		},
 
@@ -211,6 +346,35 @@
 					case 'updateMenus':
 						api.panel('nav_menus').expand();
 					break;
+
+					case 'resetChildTour':
+						self.childTourStep = -1;
+
+						// close menu items panel
+						api.Menus.availableMenuItemsPanel.close();
+
+						// collapse menu panel
+						api.panel('nav_menus').collapse();						
+
+						// open homepage section
+						api.section('static_front_page').expand();
+
+						// reset left position
+						this.$container.css( 'left', ( $( '#customize-controls' ).width() + 10 ) + 'px' );
+					break;
+
+					case 'verifyHomepage':
+						var dirtyValues = api.dirtyValues();
+
+						// Verify the homepage has been set to a 'page', otherwise skip this step.
+						// Needed to allow skipping of the homepage step entirely.
+						if (
+							api.settings.settings.show_on_front !== 'page' &&
+							dirtyValues.show_on_front !== 'page'
+						) {
+							step = this._getNextStep();
+						}
+					break;
 				}
 			} else {
 				this._closeAllSections();
@@ -218,41 +382,7 @@
 
 			// Does this step have a child tour?
 			if ( step.childSteps ) {
-				
-				// Currently only the menu item has child steps, so we can
-				// add listeners here accordingly
-
-				// Listener for selection of a menu panel, Display Child Step 0.
-				api.state( 'expandedSection' ).bind( function() {
-					var menuControl, section = api.state( 'expandedSection' ).get();
-					
-					if ( 
-						! section.params ||
-						section.params.type !== 'nav_menu' ||
-						self.childTourStep !== -1
-					) {
-						return;
-					}
-					
-					// A nav_menu section has been selected, advance to next step
-					self.childTourStep = 0;
-					self._renderStep( step.childSteps[ self.childTourStep ] );
-
-					menuControl = api.Menus.getMenuControl( section.params.menu_id );
-
-					// so dirty.
-					// there is no core event emitted ( that i could find ) when the Add New Menu Item button is clicked.
-					// this is why we can't have nice things.
-					menuControl.container.find( '.add-new-menu-item' ).on( 'click', function( event ) {
-						// Adjust the left attribute of the container
-						var currentLeft = parseInt( self.$container.css( 'left' ) );
-						self.$container.css( 'left', ( $( '#available-menu-items-search' ).width() + currentLeft ) + 'px' );
-
-						self.childTourStep = 1;
-						self._renderStep( step.childSteps[ self.childTourStep ] );
-					} );
-				} );
-
+				this._doChildSteps( step );
 			}
 
 			this._renderStep( step );
@@ -267,6 +397,7 @@
 			template = wp.template( 'wc-api-guided-tour-step' );
 
 			this.$container.removeClass( 'sf-first-step' );
+			this.$container.removeClass( 'sf-show-close' );
 
 			if ( 0 === this.currentStep ) {
 				step.first_step = true;
@@ -276,6 +407,10 @@
 			if ( this._isLastStep() ) {
 				step.last_step = true;
 				this.$container.addClass( 'sf-last-step' );
+			}
+
+			if ( step.showClose ) {
+				this.$container.addClass( 'sf-show-close' );
 			}
 
 			this._moveContainer( this._getSelector( step.section ) );
