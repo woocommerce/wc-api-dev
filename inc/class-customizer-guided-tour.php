@@ -118,8 +118,8 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			$theme_supports_woo = current_theme_supports( 'woocommerce' );
 
 			return array(
-				'autoStartTour' => $show_tour && ! $theme_supports_woo,
-				'showTourAlert' => ! $show_tour && ! $theme_supports_woo,
+				'autoStartTour' => ( bool ) $show_tour,
+				'showTourAlert' => ( bool ) ! $show_tour,
 				'alertMessage'  => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop and product pages might look a little funny.<br/><br/>We reccomend switching themes to Storefront. <a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">Click here</a> to get started.', 'storefront' ),
 			);
 		}
@@ -178,7 +178,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'panel'        => 'nav_menus',
 				'panelSection' => '.control-section-nav_menu',
 				'action'       => 'updateMenus',
-				'showSkip'     => 'true',
+				'showSkip'     => ( bool ) true,
 				'childSteps'   => array(
 					array(
 						'message'    => __( '<p>Here are the items currently added to your menu. Click the "Add Items" button.</p>', 'storefront' ),
@@ -204,8 +204,8 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 					'message'      => __( '<p>If you would like to set your shop page as your homepage select the "A static page" option.</p>', 'storefront' ),
 					'section'      => '#customize-control-show_on_front',
 					'action'       => 'resetChildTour',
-					'showSkip'     => true,
-					'suppressHide' => true,
+					'showSkip'     => ( bool ) true,
+					'suppressHide' => ( bool ) true,
 				);
 			}
 
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'message'      => __( '<p>Select which page you\'d like to set as your homepage. If you want your shop to be the focal point of your site then choosing the "Shop" page would be a good choice.</p>', 'storefront' ),
 				'section'      => '#_customize-dropdown-pages-page_on_front',
 				'action'       => $show_on_front == 'page' ? 'resetChildTour' : 'verifyHomepage',
-				'showSkip'     => true,
+				'showSkip'     => ( bool ) true,
 				'suppressHide' => $show_on_front == 'page' ? true : false,
 			);
 
