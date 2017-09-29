@@ -102,6 +102,7 @@ class WC_API_Dev {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-order-url.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-cheque-defaults.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-paypal-defaults.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-allowed-redirect-hosts.php' );
 		}
 	}
 
