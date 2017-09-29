@@ -1,4 +1,4 @@
-/* global _wpCustomizeWcApiDevGuidedTourSteps */
+/* global _wpCustomizeWcApiDevGuidedTourSteps, _wpCustomizeWcApiDevGuidedSettings */
 ( function( wp, $ ) {
 	'use strict';
 
@@ -6,6 +6,7 @@
 
 	// Set up our namespace.
 	var api = wp.customize;
+	var settings = _wpCustomizeWcApiDevGuidedSettings || {};
 
 	api.WcApiDevGuidedTourSteps = [];
 
@@ -14,7 +15,7 @@
 	}
 
 	/**
-	 * wp.customize.SFGuidedTour
+	 * wp.customize.WcApiDevGuidedTour
 	 *
 	 */
 	api.WcApiDevGuidedTour = {
@@ -354,7 +355,7 @@
 						api.Menus.availableMenuItemsPanel.close();
 
 						// collapse menu panel
-						api.panel('nav_menus').collapse();						
+						api.panel('nav_menus').collapse();
 
 						// open homepage section
 						api.section('static_front_page').expand();
@@ -389,12 +390,7 @@
 		},
 
 		_renderStep: function( step ) {
-			var template;
-			// Convert line breaks to paragraphs
-			step.message = this._lineBreaksToParagraphs( step.message );
-
-			// Load template
-			template = wp.template( 'wc-api-guided-tour-step' );
+			var template = wp.template( 'wc-api-guided-tour-step' );
 
 			this.$container.removeClass( 'sf-first-step' );
 			this.$container.removeClass( 'sf-show-close' );
@@ -460,13 +456,32 @@
 			return ( ( ( this.currentStep + 1 ) < api.WcApiDevGuidedTourSteps.length ) ? false : true );
 		},
 
-		_lineBreaksToParagraphs: function( message ) {
-			return '<p>' + message.replace( '\n\n', '</p><p>' ) + '</p>';
-		}
+		showAlert: function() {
+			var helpButton = $( '#customize-info button.customize-help-toggle' ), customizeInfoPanel, customizeInfoMessagePanel, currentMessage;
+
+			// Remove some classes, add some others.
+			customizeInfoPanel = $( '#customize-info' );
+			customizeInfoPanel.addClass( 'sf-customize-alert' );
+			helpButton.removeClass( 'dashicons-editor-help' );
+			helpButton.addClass( 'dashicons-warning' );
+
+			// Inject warning message.
+			customizeInfoMessagePanel = customizeInfoPanel.find( '.customize-panel-description' );
+			currentMessage = customizeInfoMessagePanel.text();
+			customizeInfoMessagePanel.html(
+				'<p class="sf-customize-alert-message">' + settings.alertMessage + '</p><p>' + currentMessage + '</p>'
+			);
+		},
 	};
 
 	$( document ).ready( function() {
-		api.WcApiDevGuidedTour.init();
+		if ( settings.autoStartTour ) {
+			api.WcApiDevGuidedTour.init();
+		}
+
+		if ( settings.showTourAlert ) {
+			api.WcApiDevGuidedTour.showAlert();
+		}
 	});
 } )( window.wp, jQuery );
 

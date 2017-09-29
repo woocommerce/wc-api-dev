@@ -30,10 +30,13 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		public function customizer() {
 			global $pagenow;
 
-			if ( 'customize.php' === $pagenow && isset( $_GET['wc-api-dev-tutorial'] ) ) {
+			// Always load the assets when in the customizer.
+			if ( 'customize.php' === $pagenow ) {
 				add_action( 'customize_controls_enqueue_scripts',      array( $this, 'customize_scripts' ) );
 				add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_templates' ) );
-				$this->isStorefrontActivated();
+				if ( isset( $_GET['store-wpcom-nux'] ) ) {
+					$this->isStorefrontActivated();
+				}
 			}
 		}
 
@@ -60,13 +63,12 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		public function customize_scripts() {
 			global $storefront_version;
 
-			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-
 			wp_enqueue_style( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), $storefront_version, 'all' );
 
-			wp_enqueue_script( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer' . $suffix . '.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
+			wp_enqueue_script( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
 
 			wp_localize_script( 'wc-api-dev-guided-tour', '_wpCustomizeWcApiDevGuidedTourSteps', $this->guided_tour_steps() );
+			wp_localize_script( 'wc-api-dev-guided-tour', '_wpCustomizeWcApiDevGuidedSettings', $this->guided_tour_settings() );
 		}
 
 		/**
@@ -107,6 +109,22 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		}
 
 		/**
+		 * Guided tour settings.
+		 *
+		 * @since 0.8.7
+		 */
+		public function guided_tour_settings() {
+			$show_tour = isset( $_GET['store-wpcom-nux'] );
+			$theme_supports_woo = current_theme_supports( 'woocommerce' );
+
+			return array(
+				'autoStartTour' => $show_tour && ! $theme_supports_woo,
+				'showTourAlert' => ! $show_tour && ! $theme_supports_woo,
+				'alertMessage'  => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop and product pages might look a little funny.<br/><br/>We reccomend switching themes to Storefront. <a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">Click here</a> to get started.', 'storefront' ),
+			);
+		}
+
+		/**
 		 * Guided tour steps.
 		 *
 		 * @since 0.8.7
@@ -116,7 +134,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			$steps[] = array(
 				'title'       => __( 'Customize Your Store', 'storefront' ),
-				'message'     => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer', 'storefront' ),
+				'message'     => __( '<p>It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer</p>', 'storefront' ),
 				'buttonText'  => __( 'I\'ll keep my current theme', 'storefront' ),
 				'section'     => '#customize-info',
 				'className'   => 'sf-button-secondary',
@@ -131,9 +149,10 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			// Determine what the next step should be
 			$needsLogo = ! has_custom_logo() && current_theme_supports( 'custom-logo' );
 			$logoBullet = $needsLogo ? __( '<li>Add your logo</li>', 'storefront' ) : '';
+			$stepMessage = __( '<p>Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>%s<li>Add Shop pages to your menus</li><li>Set your shop page as the homepage</li></ul>', 'storefront' );
 
 			$steps[] = array(
-				'message'     => __( 'Okay! Remember you can switch themes at any time.</p><p>To get your store looking great, let\'s run through some common tasks:</p><ul>' . $logoBullet . '<li>Add Shop pages to your menus</li><li>Set your shop page as the homepage</li></ul><p>', 'storefront' ),
+				'message'     => sprintf( $stepMessage, $logoBullet ),
 				'buttonText' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
 				'section'     => '#accordion-section-themes',
 				'altStep'    => array(
@@ -147,14 +166,14 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				$steps[] = array(
 					'title'       => __( 'Add your logo', 'storefront' ),
 					'action'      => 'addLogo',
-					'message'     => __( 'Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.', 'storefront' ),
+					'message'     => __( '<p>Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.</p>', 'storefront' ),
 					'buttonText'  => __( 'Next', 'storefront' ),
 					'section'     => 'title_tagline',
 				);
 			}
 
 			$steps[] = array(
-				'message'      => __( 'Choose a menu to add shop pages to', 'storefront' ),
+				'message'      => __( '<p>Choose a menu to add shop pages to.</p>', 'storefront' ),
 				'section'      => '#sub-accordion-panel-nav_menus',
 				'panel'        => 'nav_menus',
 				'panelSection' => '.control-section-nav_menu',
@@ -162,15 +181,15 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'showSkip'     => 'true',
 				'childSteps'   => array(
 					array(
-						'message'    => __( 'Here are the items currently added to your menu. Click the "Add Items" button.', 'storefront' ),
-						'section'    => '.add-new-menu-item',
+						'message'    => __( '<p>Here are the items currently added to your menu. Click the "Add Items" button.</p>', 'storefront' ),
+						'section'    => '.control-section-nav_menu.open .add-new-menu-item',
 					),
 					array(
-						'message'    => __( 'Click on a page to add it to your menu. You can add links to your "shop", "cart", "checkout", and "my account" pages.', 'storefront' ),
+						'message'    => __( '<p>Click on a page to add it to your menu. You can add links to your "shop", "cart", "checkout", and "my account" pages.</p>', 'storefront' ),
 						'section'    => '#available-menu-items-post_type-page',
 					),
 					array(
-						'message'    => __( 'Add as many pages as you like. When you\'re happy, click "Next" and we\'ll setup your homepage.', 'storefront' ),
+						'message'    => __( '<p>Add as many pages as you like. When you\'re happy, click "Next" and we\'ll setup your homepage.</p>', 'storefront' ),
 						'section'    => '#available-menu-items-post_type-page',
 						'buttonText' => __( 'Next', 'storefront' ),
 					),
@@ -182,7 +201,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			if ( $show_on_front != 'page' ) {
 				$steps[] = array(
-					'message'      => __( 'If you would like to set your shop page as your homepage select the "A static page" option.', 'storefront' ),
+					'message'      => __( '<p>If you would like to set your shop page as your homepage select the "A static page" option.</p>', 'storefront' ),
 					'section'      => '#customize-control-show_on_front',
 					'action'       => 'resetChildTour',
 					'showSkip'     => true,
@@ -191,7 +210,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			}
 
 			$steps[] = array(
-				'message'      => __( 'Select which page you\'d like to set as your homepage. If you want your shop to be the focal point of your site then choosing the "Shop" page would be a good choice.', 'storefront' ),
+				'message'      => __( '<p>Select which page you\'d like to set as your homepage. If you want your shop to be the focal point of your site then choosing the "Shop" page would be a good choice.</p>', 'storefront' ),
 				'section'      => '#_customize-dropdown-pages-page_on_front',
 				'action'       => $show_on_front == 'page' ? 'resetChildTour' : 'verifyHomepage',
 				'showSkip'     => true,
@@ -199,7 +218,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			);
 
 			$steps[] = array(
-				'message'      => __( 'Awesome! Your shop should be good to go. There\'s lots more to explore in the Customizer but remember to save and publish your changes.', 'storefront' ),
+				'message'      => __( '<p>Awesome! Your shop should be good to go. There\'s lots more to explore in the Customizer but remember to save and publish your changes.</p>', 'storefront' ),
 				'section'      => '#sub-accordion-panel-nav_menus',
 				'showClose'    => 'true',
 			);

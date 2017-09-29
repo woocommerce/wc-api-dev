@@ -241,3 +241,13 @@ a.sf-nux-button:active {
 .sf-show-close .sf-guided-tour-close {
 	display: block;
 }
+
+#customize-controls .customize-info.sf-customize-alert .customize-help-toggle,
+#customize-controls .customize-info.sf-customize-alert.open .customize-help-toggle {
+	color: #f0b849;
+}
+
+#customize-controls .customize-info .customize-panel-description .sf-customize-alert-message {
+	background-color: #f0b849;
+	padding: 8px;
+}
