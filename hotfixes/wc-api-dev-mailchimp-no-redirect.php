@@ -9,4 +9,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_filter( 'option_mailchimp_woocommerce_plugin_do_activation_redirect', __returne_false );
+add_filter( 'option_mailchimp_woocommerce_plugin_do_activation_redirect', '__return_false' );
