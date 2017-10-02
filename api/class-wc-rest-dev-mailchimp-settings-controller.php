@@ -29,6 +29,10 @@ class MailChimp_Woocommerce_Params_Checker extends MailChimp_Woocommerce_Admin {
 		return new self('mailchimp-woocommerce', $env->version);
 	}
 
+	public function validateApiKey( $params ) {
+		return this->validatePostApiKey( $params );
+	}
+
 	public function validateStoreInfo( $params ) {
 		return $this->validatePostStoreInfo( $params );
 	}
@@ -147,8 +151,8 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 
 	public function update_api_key( $request ) {
 		$parameters     = $request->get_params();
-		$handler        = MailChimp_Woocommerce_Admin::connect();
-		$data           = $handler->validatePostApiKey( $parameters );
+		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
+		$data           = $handler->validateApiKey( $parameters );
 		$options        = get_option('mailchimp-woocommerce', array());
     $merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
 		update_option('mailchimp-woocommerce', $merged_options);
