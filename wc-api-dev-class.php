@@ -73,6 +73,7 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-continents-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-countries-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-currencies-controller.php' );
+		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-orders-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-order-notes-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-order-refunds-controller.php' );
@@ -131,6 +132,7 @@ class WC_API_Dev {
 			'WC_REST_Dev_Data_Continents_Controller',
 			'WC_REST_Dev_Data_Countries_Controller',
 			'WC_REST_Dev_Data_Currencies_Controller',
+			'WC_REST_Dev_MailChimp_Settings_Controller',
 			'WC_REST_Dev_Order_Notes_Controller',
 			'WC_REST_Dev_Order_Refunds_Controller',
 			'WC_REST_Dev_Orders_Controller',
