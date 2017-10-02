@@ -73,7 +73,6 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-continents-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-countries-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-data-currencies-controller.php' );
-		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-orders-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-order-notes-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-order-refunds-controller.php' );
@@ -101,6 +100,10 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-system-status-tools-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
+
+		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
+				include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
+		}
 
 		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
 		if ( defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) && true === WC_API_DEV_ENABLE_HOTFIXES ) {
@@ -132,7 +135,6 @@ class WC_API_Dev {
 			'WC_REST_Dev_Data_Continents_Controller',
 			'WC_REST_Dev_Data_Countries_Controller',
 			'WC_REST_Dev_Data_Currencies_Controller',
-			'WC_REST_Dev_MailChimp_Settings_Controller',
 			'WC_REST_Dev_Order_Notes_Controller',
 			'WC_REST_Dev_Order_Refunds_Controller',
 			'WC_REST_Dev_Orders_Controller',
@@ -161,6 +163,10 @@ class WC_API_Dev {
 			'WC_REST_Dev_Shipping_Methods_Controller',
 			'WC_REST_Dev_Payment_Gateways_Controller',
 		);
+
+		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
+				$controllers[] = 'WC_REST_Dev_MailChimp_Settings_Controller';
+		}
 
 		foreach ( $controllers as $controller ) {
 			$this->$controller = new $controller();
