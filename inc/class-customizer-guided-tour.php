@@ -3,7 +3,7 @@
  * Customizer Guided Tour Class
  *
  * @author   WooThemes
- * @since    0.8.7
+ * @since    0.8.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		/**
 		 * Setup class.
 		 *
-		 * @since 0.8.7
+		 * @since 0.8.8
 		 */
 		public function __construct() {
 			add_action( 'admin_init', array( $this, 'customizer' ) );
@@ -25,7 +25,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		/**
 		 * Customizer.
 		 *
-		 * @since 0.8.7
+		 * @since 0.8.8
 		 */
 		public function customizer() {
 			global $pagenow;
@@ -58,27 +58,27 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		/**
 		 * Customizer enqueues.
 		 *
-		 * @since 0.8.7
+		 * @since 0.8.8
 		 */
 		public function customize_scripts() {
 			global $storefront_version;
 
-			wp_enqueue_style( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), $storefront_version, 'all' );
+			wp_enqueue_style( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), $storefront_version, 'all' );
 
-			wp_enqueue_script( 'wc-api-dev-guided-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
+			wp_enqueue_script( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
 
-			wp_localize_script( 'wc-api-dev-guided-tour', '_wpCustomizeWcApiDevGuidedTourSteps', $this->guided_tour_steps() );
-			wp_localize_script( 'wc-api-dev-guided-tour', '_wpCustomizeWcApiDevGuidedSettings', $this->guided_tour_settings() );
+			wp_localize_script( 'wc-store-nux-tour', '_wpStoreNuxTourSteps', $this->guided_tour_steps() );
+			wp_localize_script( 'wc-store-nux-tour', '_wpStoreNuxSettings', $this->guided_tour_settings() );
 		}
 
 		/**
 		 * Template for steps.
 		 *
-		 * @since 0.8.7
+		 * @since 0.8.8
 		 */
 		public function print_templates() {
 			?>
-			<script type="text/html" id="tmpl-wc-api-guided-tour-step">
+			<script type="text/html" id="tmpl-wc-store-tour-step">
 				<div class="sf-guided-tour-step">
 					<a class="sf-guided-tour-close" href="#">
 						<span class="dashicons dashicons-no-alt"></span>

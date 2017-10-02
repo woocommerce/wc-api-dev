@@ -1,4 +1,4 @@
-/* global _wpCustomizeWcApiDevGuidedTourSteps, _wpCustomizeWcApiDevGuidedSettings */
+/* global _wpStoreNuxTourSteps, _wpStoreNuxSettings */
 ( function( wp, $ ) {
 	'use strict';
 
@@ -6,25 +6,32 @@
 
 	// Set up our namespace.
 	var api = wp.customize;
-	var settings = _wpCustomizeWcApiDevGuidedSettings || {};
+	var settings = _wpStoreNuxSettings || {};
 
-	api.WcApiDevGuidedTourSteps = [];
+	api.WcStoreNuxSteps = [];
 
-	if ( 'undefined' !== typeof _wpCustomizeWcApiDevGuidedTourSteps ) {
-		$.extend( api.WcApiDevGuidedTourSteps, _wpCustomizeWcApiDevGuidedTourSteps );
+	if ( 'undefined' !== typeof _wpStoreNuxTourSteps ) {
+		$.extend( api.WcStoreNuxSteps, _wpStoreNuxTourSteps );
+	}
+
+	// Simple support for bumping mc stats.
+	function bumpStat( name ) {
+		var uriComponent = '&x_store_nux=' + encodeURIComponent( name );
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + uriComponent + '&t=' + Math.random();
 	}
 
 	/**
-	 * wp.customize.WcApiDevGuidedTour
+	 * wp.customize.WcStoreNuxTour
 	 *
 	 */
-	api.WcApiDevGuidedTour = {
+	api.WcStoreNuxTour = {
 		$container: null,
 		currentStep: -1,
 		childTourStep: -1,
 
 		init: function() {
 			this._setupUI();
+			bumpStat( 'tour-start' );
 		},
 
 		_setupUI: function() {
@@ -111,7 +118,7 @@
 			} );
 
 			// Listen to changes on Homepage Display Radio
-			$('#customize-control-show_on_front' ).on( 'change', function( e ) {
+			$( '#customize-control-show_on_front' ).on( 'change', function( e ) {
 				var currentStep = self._getCurrentStep();
 
 				if (
@@ -122,6 +129,7 @@
 				}
 
 				if ( e && e.target && e.target.value === 'page' ) {
+					bumpStat( 'set-home-to-page' );
 					// User has toggled proceed to next step
 					self._showNextStep();
 				}
@@ -140,6 +148,7 @@
 
 				// Obvioulsy won't work for non enUs
 				if ( $(' #_customize-dropdown-pages-page_on_front option:selected' ).text() === 'Shop' ) {
+					bumpStat( 'set-home-to-shop' );
 					self._showNextStep();
 				}
 			} );
@@ -158,9 +167,11 @@
 					nextStep = step.altStep;
 					delete( nextStep.buttonText );
 					self._renderStep( nextStep );
+					bumpStat( 'try-storefront' );
 				break;
 
 				case 'exit':
+					bumpStat( 'exit-step-2' );
 					this._hideTour( true );
 				break;
 			}
@@ -208,6 +219,7 @@
 							self._hideTour();
 							return;
 						}
+						bumpStat( 'entered-menu' );
 
 						// Adjust the left attribute of the container
 						self.$container.css( 'left', ( $( '#available-menu-items-search' ).width() + currentLeft ) + 'px' );
@@ -230,6 +242,7 @@
 						}
 
 						self.childTourStep += 1;
+						bumpStat( 'added-menu-item' );
 
 						if ( step.childSteps[ self.childTourStep ] ) {
 							self._renderStep( step.childSteps[ self.childTourStep ] );
@@ -341,11 +354,13 @@
 			if ( step.action ) {
 				switch ( step.action ) {
 					case 'addLogo':
-						api.section.instance('title_tagline').expand();
+						api.section.instance( 'title_tagline' ).expand();
+						bumpStat( 'logo-step' );
 					break;
 
 					case 'updateMenus':
-						api.panel('nav_menus').expand();
+						api.panel( 'nav_menus' ).expand();
+						bumpStat( 'menu-step' );
 					break;
 
 					case 'resetChildTour':
@@ -355,10 +370,10 @@
 						api.Menus.availableMenuItemsPanel.close();
 
 						// collapse menu panel
-						api.panel('nav_menus').collapse();
+						api.panel( 'nav_menus' ).collapse();
 
 						// open homepage section
-						api.section('static_front_page').expand();
+						api.section( 'static_front_page' ).expand();
 
 						// reset left position
 						this.$container.css( 'left', ( $( '#customize-controls' ).width() + 10 ) + 'px' );
@@ -390,7 +405,7 @@
 		},
 
 		_renderStep: function( step ) {
-			var template = wp.template( 'wc-api-guided-tour-step' );
+			var template = wp.template( 'wc-store-tour-step' );
 
 			this.$container.removeClass( 'sf-first-step' );
 			this.$container.removeClass( 'sf-show-close' );
@@ -440,12 +455,12 @@
 		},
 
 		_getCurrentStep: function() {
-			return api.WcApiDevGuidedTourSteps[ this.currentStep ];
+			return api.WcStoreNuxSteps[ this.currentStep ];
 		},
 
 		_getNextStep: function() {
 			this.currentStep = this.currentStep + 1;
-			return api.WcApiDevGuidedTourSteps[ this.currentStep ];
+			return api.WcStoreNuxSteps[ this.currentStep ];
 		},
 
 		_isTourHidden: function() {
@@ -453,7 +468,7 @@
 		},
 
 		_isLastStep: function() {
-			return ( ( ( this.currentStep + 1 ) < api.WcApiDevGuidedTourSteps.length ) ? false : true );
+			return ( ( ( this.currentStep + 1 ) < api.WcStoreNuxSteps.length ) ? false : true );
 		},
 
 		showAlert: function() {
@@ -471,16 +486,17 @@
 			customizeInfoMessagePanel.html(
 				'<p class="sf-customize-alert-message">' + settings.alertMessage + '</p><p>' + currentMessage + '</p>'
 			);
+			bumpStat( 'alert-shown' );
 		},
 	};
 
 	$( document ).ready( function() {
 		if ( settings.autoStartTour ) {
-			api.WcApiDevGuidedTour.init();
+			api.WcStoreNuxTour.init();
 		}
 
 		if ( settings.showTourAlert ) {
-			api.WcApiDevGuidedTour.showAlert();
+			api.WcStoreNuxTour.showAlert();
 		}
 	});
 } )( window.wp, jQuery );
