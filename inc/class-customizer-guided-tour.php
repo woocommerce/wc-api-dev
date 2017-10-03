@@ -116,6 +116,8 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		public function guided_tour_settings() {
 			$show_tour = isset( $_GET['store-wpcom-nux'] );
 			$theme_supports_woo = current_theme_supports( 'woocommerce' );
+			$supported_themes = wc_get_core_supported_themes();
+			$current_theme = get_template();
 
 			return array(
 				'autoStartTour' => ( bool ) $show_tour,
