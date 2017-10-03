@@ -122,6 +122,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_sync_status' ),
+				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+			),
+		//'schema' => array( $this, 'get_api_key_schema' ),
+		) );
 	}
 
 	/**
@@ -282,6 +290,60 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		$merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
 		update_option('mailchimp-woocommerce', $merged_options);
 		return rest_ensure_response( $merged_options );
+	}
+
+	public function get_sync_status( $request ) {
+		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
+		$mailchimp_total_products = $mailchimp_total_orders = 0;
+		$store_id = mailchimp_get_store_id();
+		$product_count = mailchimp_get_product_count();
+		$order_count = mailchimp_get_order_count();
+		$store_syncing = false;
+		$last_updated_time = get_option('mailchimp-woocommerce-resource-last-updated');
+		$account_name = 'n/a';
+		$mailchimp_list_name = 'n/a';
+
+		if (!empty($last_updated_time)) {
+		    $last_updated_time = mailchimp_date_local($last_updated_time);
+		}
+
+		if (($mailchimp_api = mailchimp_get_api()) && ($store = $mailchimp_api->getStore($store_id))) {
+
+		    $store_syncing = $store->isSyncing();
+
+		    if (($account_details = $handler->getAccountDetails())) {
+		        $account_name = $account_details['account_name'];
+		    }
+
+		    try {
+		        $products = $mailchimp_api->products($store_id, 1, 1);
+		        $mailchimp_total_products = $products['total_items'];
+		        if ($mailchimp_total_products > $product_count) $mailchimp_total_products = $product_count;
+		    } catch (\Exception $e) { $mailchimp_total_products = 0; }
+
+		    try {
+		        $orders = $mailchimp_api->orders($store_id, 1, 1);
+		        $mailchimp_total_orders = $orders['total_items'];
+		        if ($mailchimp_total_orders > $order_count) $mailchimp_total_orders = $order_count;
+		    } catch (\Exception $e) { $mailchimp_total_orders = 0; }
+
+		    $mailchimp_list_name = $handler->getListName();
+		}
+
+		$data = array();
+
+		$data[ 'last_updated_time' ]        = $last_updated_time->format('D, M j, Y g:i A');
+		$data[ 'store_syncing' ]            = $store_syncing;
+		$data[ 'mailchimp_total_products' ] = $mailchimp_total_products;
+		$data[ 'product_count' ]            = $product_count;
+ 		$data[ 'mailchimp_total_orders' ]   = $mailchimp_total_orders;
+		$data[ 'order_count' ]              = $order_count;
+		$data[ 'account_name' ]             = $account_name;
+		$data[ 'mailchimp_list_name' ]      = $mailchimp_list_name;
+		$data[ 'store_id' ]                 = $store_id;
+
+
+		return rest_ensure_response( $data );
 	}
 
 	/**
