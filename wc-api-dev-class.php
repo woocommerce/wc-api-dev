@@ -115,6 +115,7 @@ class WC_API_Dev {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-allowed-redirect-hosts.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-masterbar-menu.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-no-redirect.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );
 		}
 
 		// Classes that are not related to the API.
