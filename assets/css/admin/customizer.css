@@ -247,7 +247,13 @@ a.sf-nux-button:active {
 	color: #f0b849;
 }
 
-#customize-controls .customize-info .customize-panel-description .sf-customize-alert-message {
+#customize-controls .customize-info .customize-panel-description p.sf-customize-alert-message {
 	background-color: #f0b849;
-	padding: 8px;
+	padding: 15px;
+	margin: -12px -15px 12px;
+	color: #5B3F06;
+}
+
+#customize-controls .customize-info .customize-panel-description p.sf-customize-alert-message a {
+	color: #5B3F06;
 }

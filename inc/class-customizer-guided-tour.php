@@ -120,7 +120,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 			return array(
 				'autoStartTour' => ( bool ) $show_tour,
 				'showTourAlert' => ( bool ) ! $show_tour,
-				'alertMessage'  => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop and product pages might look a little funny.<br/><br/>We reccomend switching themes to Storefront. <a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">Click here</a> to get started.', 'storefront' ),
+				'alertMessage'  => __( '<strong>Your current theme isn\'t ready for store features yet</strong>. Consequently your shop and product page layouts might display incorrectly.<br/><br/>We reccomend switching themes to <strong>Storefront</strong>. <a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">Click here</a> to get started.', 'storefront' ),
 			);
 		}
 
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			$steps[] = array(
 				'title'       => __( 'Customize Your Store', 'storefront' ),
-				'message'     => __( '<p>It looks like your current theme isn\'t ready for shop features yet - your shop pages might look a little funny.</p><p>We suggest switching themes to <b>Storefront</b> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer</p>', 'storefront' ),
+				'message'     => __( '<p>Your current theme isn\'t ready for store features yet. Consequently your shop and product page layouts might display incorrectly.</p><p>We recommend switching themes to <strong>Storefront</strong> which will bring out the best in your shop. Don\'t worry, if you try Storefront now, it won\'t be activated until you save your changes in the Customizer</p>', 'storefront' ),
 				'buttonText'  => __( 'I\'ll keep my current theme', 'storefront' ),
 				'section'     => '#customize-info',
 				'className'   => 'sf-button-secondary',
