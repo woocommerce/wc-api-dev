@@ -115,7 +115,6 @@ class WC_API_Dev {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-allowed-redirect-hosts.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-masterbar-menu.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-no-redirect.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );
 		}
 
 		// Classes that are not related to the API.
@@ -173,6 +172,9 @@ class WC_API_Dev {
 			$this->$controller = new $controller();
 			$this->$controller->register_routes();
 		}
+
+		// We include it here because rest_api_init is a proper context for mocekd add_settings_error function
+		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );		
 	}
 
 	/**
