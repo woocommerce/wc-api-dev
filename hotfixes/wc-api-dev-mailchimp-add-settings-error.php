@@ -13,6 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 //TODO:
 //  - use this function to capture messages and feed them back to Calypso on return from API.
 
-if ( ! function_exists( 'add_settings_error' ) ) {
+if ( ! function_exists( 'add_settings_error' ) && ! is_admin() ) {
         function add_settings_error( $setting, $code, $message, $type = 'error' ) {}
 }
