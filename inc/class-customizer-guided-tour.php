@@ -116,10 +116,12 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		public function guided_tour_settings() {
 			$show_tour = isset( $_GET['store-wpcom-nux'] );
 			$theme_supports_woo = current_theme_supports( 'woocommerce' );
+			$supported_themes = wc_get_core_supported_themes();
+			$current_theme = get_template();
 
 			return array(
 				'autoStartTour' => ( bool ) $show_tour,
-				'showTourAlert' => ( bool ) ! $show_tour,
+				'showTourAlert' => ( bool ) ! $theme_supports_woo && ! in_array( $current_theme, $supported_themes ),
 				'alertMessage'  => __( 'It looks like your current theme isn\'t ready for shop features yet - your shop and product pages might look a little funny.<br/><br/>We reccomend switching themes to Storefront. <a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">Click here</a> to get started.', 'storefront' ),
 			);
 		}
