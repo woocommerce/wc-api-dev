@@ -2,7 +2,7 @@
 /**
  * Adds WordPress.com, and Calypso localhost to safe redirect whitelist
  *
- * @since 0.8.7
+ * @since 0.8.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
