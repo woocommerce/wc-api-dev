@@ -63,9 +63,9 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 		public function customize_scripts() {
 			global $storefront_version;
 
-			wp_enqueue_style( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), $storefront_version, 'all' );
+			wp_enqueue_style( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/css/admin/customizer.css', array(), WC_API_Dev::CURRENT_VERSION, 'all' );
 
-			wp_enqueue_script( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer.js', array( 'jquery', 'wp-backbone' ), $storefront_version, true );
+			wp_enqueue_script( 'wc-store-nux-tour', WC_API_Dev::$plugin_url . 'assets/js/admin/customizer.js', array( 'jquery', 'wp-backbone' ), WC_API_Dev::CURRENT_VERSION, true );
 
 			wp_localize_script( 'wc-store-nux-tour', '_wpStoreNuxTourSteps', $this->guided_tour_steps() );
 			wp_localize_script( 'wc-store-nux-tour', '_wpStoreNuxSettings', $this->guided_tour_settings() );
@@ -121,7 +121,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			return array(
 				'autoStartTour' => ( bool ) $show_tour,
-				'showTourAlert' => ( bool ) ! $show_tour,
+				'showTourAlert' => ( bool ) ! $theme_supports_woo && ! in_array( $current_theme, $supported_themes ),
 				'alertMessage'  => sprintf( __( '%1$sYour current theme isn\'t ready for store features yet%2$s. Consequently your shop and product page layouts might display incorrectly.%3$sWe reccomend switching themes to %1$sStorefront%2$s. %4$sClick here%5$s to get started.%3$s %6$sLearn more about Storefront%5$s', 'storefront' ), '<strong>', '</strong>', '<br><br>', '<a href="/wp-admin/customize.php?theme=storefront&sf_guided_tour=1&sf_tasks=homepage">', '</a>', '<a href="https://woocommerce.com/storefront/" target="_blank">' ),
 			);
 		}
