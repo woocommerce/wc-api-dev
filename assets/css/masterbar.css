@@ -1,0 +1,5 @@
+#wpadminbar li.menupop > .ab-sub-wrapper li#wp-admin-bar-store {
+	background-image: url( "data:image/svg+xml,%3Csvg%20class%3D%22gridicon%20gridicons-cart%22%20height%3D%2224%22%20width%3D%2224%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%3E%3Cpath%20fill%3D%22%2387a6bc%22%20d%3D%22M9%2020c0%201.1-.9%202-2%202s-1.99-.9-1.99-2S5.9%2018%207%2018s2%20.9%202%202zm8-2c-1.1%200-1.99.9-1.99%202s.89%202%201.99%202%202-.9%202-2-.9-2-2-2zm.396-5c.937%200%201.75-.65%201.952-1.566L21%205H7V4c0-1.105-.895-2-2-2H3v2h2v11c0%201.105.895%202%202%202h12c0-1.105-.895-2-2-2H7v-2h10.396z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" );
+	background-repeat: no-repeat;
+	background-position: 21px 12px;	
+}
