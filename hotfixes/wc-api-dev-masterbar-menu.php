@@ -10,7 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function wc_api_dev_masterbar_css() {
-	wp_enqueue_style( 'wp-api-dev-masterbar', '/wp-content/plugins/wc-api-dev/assets/css/masterbar.css', array(), WC_API_Dev::CURRENT_VERSION );	
+	$asset_path = WC_API_Dev::$plugin_asset_path ? WC_API_Dev::$plugin_asset_path : WC_API_Dev::MU_PLUGIN_ASSET_PATH;
+	wp_enqueue_style( 'wp-api-dev-masterbar', $asset_path . 'assets/css/masterbar.css', array(), WC_API_Dev::CURRENT_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'wc_api_dev_masterbar_css' );
 add_action( 'admin_enqueue_scripts', 'wc_api_dev_masterbar_css' );

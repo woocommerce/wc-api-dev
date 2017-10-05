@@ -15,7 +15,11 @@ class WC_API_Dev {
 	 */
 	const WC_MIN_VERSION = '3.0.0';
 
-	public static $plugin_url = null;
+	/**
+	 * Paths to assets act oddly in production
+	 */
+	const MU_PLUGIN_ASSET_PATH = '/wp-content/mu-plugins/wpcomsh/vendor/woocommerce/wc-api-dev/';
+	public static $plugin_asset_path = null;
 
 	/**
 	 * Class Instance.
@@ -166,7 +170,13 @@ class WC_API_Dev {
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
-			self::$plugin_url = plugin_dir_url( __FILE__ );
+			// If this is a traditionally installed plugin, set plugin_url for the proper asset path.
+			if ( file_exists( WP_PLUGIN_DIR . '/wc-api-dev/wc-api-dev.php' ) ) {
+				if ( WP_PLUGIN_DIR . '/wc-api-dev/' == plugin_dir_path( __FILE__ ) ) {
+					self::$plugin_asset_path = plugin_dir_url( __FILE__ );
+				}
+			}
+
 			self::$instance = new self();
 		}
 
