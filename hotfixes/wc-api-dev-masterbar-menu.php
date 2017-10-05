@@ -18,7 +18,7 @@ add_action( 'admin_enqueue_scripts', 'wc_api_dev_masterbar_css' );
 add_action( 'jetpack_masterbar', function() {
 	global $wp_admin_bar;
 
-	if ( isset( $wp_admin_bar ) ) {
+	if ( isset( $wp_admin_bar ) && current_user_can( 'manage_options' ) ) {
 		$strip_http = '/.*?:\/\//i';
 		$site_slug  = preg_replace( $strip_http, '', get_home_url() );
 		$site_slug  = str_replace( '/', '::', $site_slug );
