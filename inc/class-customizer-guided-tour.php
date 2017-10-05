@@ -140,12 +140,14 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'buttonText'  => __( 'I\'ll keep my current theme', 'storefront' ),
 				'section'     => '#customize-info',
 				'className'   => 'sf-button-secondary',
+				'stat'        => '1-keep-try-step',
 				'altStep'     => array(
 					'buttonText'  => __( 'I\'ll try Storefront!', 'storefront' ),
 					'action'      => 'expandThemes',
 					'message'     => __( 'Click the thumbnail to get started with Storefront', 'storefront' ),
 					'section'     => '#customize-control-theme_storefront .theme-screenshot',
-				)
+					'stat'        => '1-click-try-sf',
+				),
 			);
 
 			// Determine what the next step should be
@@ -155,13 +157,15 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 
 			$steps[] = array(
 				'message'     => sprintf( $stepMessage, $logoBullet ),
-				'buttonText' => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
+				'buttonText'  => $needsLogo ? __( 'Add a logo', 'storefront' ) : __( 'Add menu items', 'storefront' ),
 				'section'     => '#accordion-section-themes',
-				'altStep'    => array(
+				'stat'        => $needsLogo ? '2-add-logo' : '2-add-menu',
+				'altStep'     => array(
 					'buttonText' => __( 'I\'ll figure it out for myself', 'storefront' ),
 					'className'   => 'sf-button-secondary',
 					'action'      => 'exit',
-				)
+					'stat'        => '2-click-exit',
+				),
 			);
 
 			if ( $needsLogo ) {
@@ -171,6 +175,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 					'message'     => __( '<p>Click the \'Select Logo\' button to upload your logo. After you upload your logo, click next to update your menus.</p>', 'storefront' ),
 					'buttonText'  => __( 'Next', 'storefront' ),
 					'section'     => 'title_tagline',
+					'stat'        => '3-select-logo'
 				);
 			}
 
@@ -181,19 +186,23 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'panelSection' => '.control-section-nav_menu',
 				'action'       => 'updateMenus',
 				'showSkip'     => ( bool ) true,
+				'stat'         => '4-add-menu',
 				'childSteps'   => array(
 					array(
 						'message'    => __( '<p>Here are the items currently added to your menu. Click the "Add Items" button.</p>', 'storefront' ),
 						'section'    => '.control-section-nav_menu.open .add-new-menu-item',
+						'stat'       => '4a-menu-items',
 					),
 					array(
 						'message'    => __( '<p>Click on a page to add it to your menu. You can add links to your "shop", "cart", "checkout", and "my account" pages.</p>', 'storefront' ),
 						'section'    => '#available-menu-items-post_type-page',
+						'stat'       => '4b-menu-items-add',
 					),
 					array(
 						'message'    => __( '<p>Add as many pages as you like. When you\'re happy, click "Next" and we\'ll setup your homepage.</p>', 'storefront' ),
 						'section'    => '#available-menu-items-post_type-page',
 						'buttonText' => __( 'Next', 'storefront' ),
+						'stat'       => '4c-next',
 					),
 				)
 			);
@@ -208,6 +217,7 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 					'action'       => 'resetChildTour',
 					'showSkip'     => ( bool ) true,
 					'suppressHide' => ( bool ) true,
+					'stat'         => '5-static-page',
 				);
 			}
 
@@ -217,12 +227,14 @@ if ( ! class_exists( 'Customizer_NUX_Guided_Tour' ) ) :
 				'action'       => $show_on_front == 'page' ? 'resetChildTour' : 'verifyHomepage',
 				'showSkip'     => ( bool ) true,
 				'suppressHide' => $show_on_front == 'page' ? true : false,
+				'stat'         => '6-set-shop-home',
 			);
 
 			$steps[] = array(
 				'message'      => __( '<p>Awesome! Your shop should be good to go. There\'s lots more to explore in the Customizer but remember to save and publish your changes.</p>', 'storefront' ),
 				'section'      => '#sub-accordion-panel-nav_menus',
 				'showClose'    => 'true',
+				'stat'         => '7-done',
 			);
 
 			return $steps;

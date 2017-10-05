@@ -31,7 +31,6 @@
 
 		init: function() {
 			this._setupUI();
-			bumpStat( 'tour-start' );
 		},
 
 		_setupUI: function() {
@@ -65,6 +64,11 @@
 			});
 
 			$( document ).on( 'click', '.sf-guided-tour-step .sf-guided-tour-skip', function() {
+				var step = self._getCurrentStep();
+				if ( step.stat ) {
+					bumpStat( step.stat + '-skip' );
+				}
+
 				if ( 0 === self.currentStep ) {
 					self._hideTour( true );
 				} else {
@@ -129,7 +133,6 @@
 				}
 
 				if ( e && e.target && e.target.value === 'page' ) {
-					bumpStat( 'set-home-to-page' );
 					// User has toggled proceed to next step
 					self._showNextStep();
 				}
@@ -148,7 +151,6 @@
 
 				// Obvioulsy won't work for non enUs
 				if ( $(' #_customize-dropdown-pages-page_on_front option:selected' ).text() === 'Shop' ) {
-					bumpStat( 'set-home-to-shop' );
 					self._showNextStep();
 				}
 			} );
@@ -167,12 +169,16 @@
 					nextStep = step.altStep;
 					delete( nextStep.buttonText );
 					self._renderStep( nextStep );
-					bumpStat( 'try-storefront' );
+					if ( step.stat ) {
+						bumpStat( step.stat );
+					}
 				break;
 
 				case 'exit':
-					bumpStat( 'exit-step-2' );
 					this._hideTour( true );
+					if ( step.stat ) {
+						bumpStat( step.stat );
+					}
 				break;
 			}
 		},
@@ -219,7 +225,6 @@
 							self._hideTour();
 							return;
 						}
-						bumpStat( 'entered-menu' );
 
 						// Adjust the left attribute of the container
 						self.$container.css( 'left', ( $( '#available-menu-items-search' ).width() + currentLeft ) + 'px' );
@@ -242,7 +247,6 @@
 						}
 
 						self.childTourStep += 1;
-						bumpStat( 'added-menu-item' );
 
 						if ( step.childSteps[ self.childTourStep ] ) {
 							self._renderStep( step.childSteps[ self.childTourStep ] );
@@ -355,12 +359,10 @@
 				switch ( step.action ) {
 					case 'addLogo':
 						api.section.instance( 'title_tagline' ).expand();
-						bumpStat( 'logo-step' );
 					break;
 
 					case 'updateMenus':
 						api.panel( 'nav_menus' ).expand();
-						bumpStat( 'menu-step' );
 					break;
 
 					case 'resetChildTour':
@@ -409,6 +411,10 @@
 
 			this.$container.removeClass( 'sf-first-step' );
 			this.$container.removeClass( 'sf-show-close' );
+
+			if ( step.stat ) {
+				bumpStat( step.stat );
+			}
 
 			if ( 0 === this.currentStep ) {
 				step.first_step = true;
