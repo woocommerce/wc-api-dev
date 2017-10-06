@@ -146,7 +146,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	/**
-	 * Get payment gateways.
+	 * Get current MailChimp settings.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response
@@ -287,7 +287,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
 		$data           = $handler->validateNewsletterSettings( $parameters );
 		$options        = get_option('mailchimp-woocommerce', array());
+		$active_tab     = $options['active_tab'];
 		$merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
+
+		// if previous active tab was sync then we still want sync
+		// because  this call is just an update and not part of setup
+		if( $active_tab == 'sync' ) {
+			$merged_options['active_tab'] = 'sync';
+		}
 		update_option('mailchimp-woocommerce', $merged_options);
 		return rest_ensure_response( $merged_options );
 	}
