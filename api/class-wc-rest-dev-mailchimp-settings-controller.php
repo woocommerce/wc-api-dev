@@ -130,6 +130,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'resync' ),
+				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+			),
+		//'schema' => array( $this, 'get_api_key_schema' ),
+		) );
 	}
 
 	/**
@@ -299,6 +307,8 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		return rest_ensure_response( $merged_options );
 	}
 
+
+
 	public function get_sync_status( $request ) {
 		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
 		$mailchimp_total_products = $mailchimp_total_orders = 0;
@@ -351,6 +361,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 
 
 		return rest_ensure_response( $data );
+	}
+
+	public function resync( $request ) {
+		$input = array();
+		$input['mailchimp_active_tab'] = 'sync';
+		$handler = MailChimp_Woocommerce_Params_Checker::connect();
+		$handler->validate( $input );
+		return $this->get_sync_status( $request );
 	}
 
 	/**
