@@ -135,7 +135,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 
 	public function update_api_key( $request ) {
 		$parameters               = $request->get_params();
-		$parameters['active_tab'] = 'api_ke';
+		$parameters['active_tab'] = 'api_key';
 		$handler                  = MailChimp_Woocommerce_Admin::connect();
 		$data                     = $handler->validate( $parameters );
 
