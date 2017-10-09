@@ -95,6 +95,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_sync_status' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
