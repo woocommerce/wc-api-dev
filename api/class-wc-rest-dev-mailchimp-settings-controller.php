@@ -166,7 +166,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		return $this->add_additional_fields_schema( $schema );
 	}
 
-	public function update_store_info( $request ) {}
+	public function update_store_info( $request ) {
 		$parameters               = $request->get_params();
 		$parameters['active_tab'] = 'store_info';
 		$handler                  = MailChimp_Woocommerce_Admin::connect();
