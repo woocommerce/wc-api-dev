@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package WooCommerce/API
  */
-class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Controller {
+class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -48,7 +48,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_settings' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 			)
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/api_key', array(
@@ -95,7 +95,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_sync_status' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
