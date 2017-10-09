@@ -6,8 +6,6 @@
  *
  * @author   Automattic
  * @category API
- * @package  WooCommerce/API
- * @since    3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -57,7 +55,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 				'callback'            => array( $this, 'update_api_key' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 			),
-		'schema' => array( $this, 'get_api_key_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/store_info', array(
 			array(
@@ -112,8 +109,8 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 	 *
 	 */
 	public function get_settings( $request ) {
-		$options = get_option('mailchimp-woocommerce', array() );
-		$options['mailchimp_active_tab'] = isset($options['mailchimp_active_tab']) ? $options['mailchimp_active_tab'] : "api_key";
+		$options = get_option( 'mailchimp-woocommerce', array() );
+		$options['mailchimp_active_tab'] = isset( $options['mailchimp_active_tab'] ) ? $options['mailchimp_active_tab'] : 'api_key';
 		return rest_ensure_response( $options );
 	}
 
@@ -130,7 +127,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
 		$data                               = $handler->validate( $parameters );
 
-		update_option('mailchimp-woocommerce', $data);
+		update_option( 'mailchimp-woocommerce', $data );
 
 		return rest_ensure_response( $data );
 	}
@@ -148,7 +145,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
 		$data                               = $handler->validate( $parameters );
 
-		update_option('mailchimp-woocommerce', $data);
+		update_option( 'mailchimp-woocommerce', $data );
 
 		return rest_ensure_response( $data );
 	}
@@ -169,7 +166,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
 		$data                               = $handler->validate( $parameters );
 
-		update_option('mailchimp-woocommerce', $data);
+		update_option( 'mailchimp-woocommerce', $data );
 
 		return rest_ensure_response( $data );
 	}
@@ -200,7 +197,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'newsletter_settings';
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
-		$options                            = get_option('mailchimp-woocommerce', array());
+		$options                            = get_option( 'mailchimp-woocommerce', array() );
 		$mailchimp_active_tab               = $options['active_tab'];
 	  $data                               = $handler->validate( $parameters );
 
@@ -210,7 +207,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			$data['mailchimp_active_tab'] = 'sync';
 		}
 
-		update_option('mailchimp-woocommerce', $data);
+		update_option( 'mailchimp-woocommerce', $data);
 
 		return rest_ensure_response( $data );
 	}
@@ -229,32 +226,32 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		$product_count            = mailchimp_get_product_count();
 		$order_count              = mailchimp_get_order_count();
 		$store_syncing            = false;
-		$last_updated_time        = get_option('mailchimp-woocommerce-resource-last-updated');
+		$last_updated_time        = get_option( 'mailchimp-woocommerce-resource-last-updated' );
 		$account_name             = 'n/a';
 		$mailchimp_list_name      = 'n/a';
 
 		if (!empty($last_updated_time)) {
-		    $last_updated_time = mailchimp_date_local($last_updated_time);
+		    $last_updated_time = mailchimp_date_local( $last_updated_time );
 		}
 
-		if (($mailchimp_api = mailchimp_get_api()) && ($store = $mailchimp_api->getStore($store_id))) {
+		if ( ( $mailchimp_api = mailchimp_get_api() ) && ( $store = $mailchimp_api->getStore( $store_id ) ) ) {
 
 		    $store_syncing = $store->isSyncing();
 
-		    if (($account_details = $handler->getAccountDetails())) {
+		    if ( ( $account_details = $handler->getAccountDetails() ) ) {
 		        $account_name = $account_details['account_name'];
 		    }
 
 		    try {
-		        $products = $mailchimp_api->products($store_id, 1, 1);
+		        $products = $mailchimp_api->products( $store_id, 1, 1 );
 		        $mailchimp_total_products = $products['total_items'];
-		        if ($mailchimp_total_products > $product_count) $mailchimp_total_products = $product_count;
+		        if ( $mailchimp_total_products > $product_count ) $mailchimp_total_products = $product_count;
 		    } catch (\Exception $e) { $mailchimp_total_products = 0; }
 
 		    try {
-		        $orders = $mailchimp_api->orders($store_id, 1, 1);
+		        $orders = $mailchimp_api->orders( $store_id, 1, 1 );
 		        $mailchimp_total_orders = $orders['total_items'];
-		        if ($mailchimp_total_orders > $order_count) $mailchimp_total_orders = $order_count;
+		        if ( $mailchimp_total_orders > $order_count ) $mailchimp_total_orders = $order_count;
 		    } catch (\Exception $e) { $mailchimp_total_orders = 0; }
 
 		    $mailchimp_list_name = $handler->getListName();
@@ -262,15 +259,15 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 
 		$data = array();
 
-		$data[ 'last_updated_time' ]        = $last_updated_time->format('D, M j, Y g:i A');
-		$data[ 'store_syncing' ]            = $store_syncing;
-		$data[ 'mailchimp_total_products' ] = $mailchimp_total_products;
-		$data[ 'product_count' ]            = $product_count;
- 		$data[ 'mailchimp_total_orders' ]   = $mailchimp_total_orders;
-		$data[ 'order_count' ]              = $order_count;
-		$data[ 'account_name' ]             = $account_name;
-		$data[ 'mailchimp_list_name' ]      = $mailchimp_list_name;
-		$data[ 'store_id' ]                 = $store_id;
+		$data['last_updated_time']        = $last_updated_time->format( 'D, M j, Y g:i A' );
+		$data['store_syncing']            = $store_syncing;
+		$data['mailchimp_total_products'] = $mailchimp_total_products;
+		$data['product_count']            = $product_count;
+ 		$data['mailchimp_total_orders']   = $mailchimp_total_orders;
+		$data['order_count']              = $order_count;
+		$data['account_name']             = $account_name;
+		$data['mailchimp_list_name']      = $mailchimp_list_name;
+		$data['store_id']                 = $store_id;
 
 		return rest_ensure_response( $data );
 	}
