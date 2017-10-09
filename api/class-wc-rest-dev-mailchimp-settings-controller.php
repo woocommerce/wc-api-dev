@@ -55,6 +55,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_api_key' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		'schema' => array( $this, 'get_api_key_schema' ),
@@ -63,6 +64,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_store_info' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		'schema' => array( $this, 'get_store_info_schema' ),
@@ -71,6 +73,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_campaign_defaults' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		//'schema' => array( $this, 'get_store_info_schema' ),
@@ -79,6 +82,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_newsletter_settings' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
@@ -87,6 +91,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_newsletter_settings' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
@@ -103,6 +108,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'resync' ),
+				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		//'schema' => array( $this, 'get_api_key_schema' ),
