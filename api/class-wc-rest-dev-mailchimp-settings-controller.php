@@ -274,8 +274,9 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		// because this call is just an update and not part of setup
 		if( $mailchimp_active_tab == 'sync' ) {
 			$data['mailchimp_active_tab'] = 'sync';
-			update_option('mailchimp-woocommerce', $data);
 		}
+
+		update_option('mailchimp-woocommerce', $data);
 
 		return rest_ensure_response( $data );
 	}
