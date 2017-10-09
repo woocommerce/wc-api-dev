@@ -267,7 +267,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		$parameters['mailchimp_active_tab'] = 'newsletter_settings';
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
 		$options                            = get_option('mailchimp-woocommerce', array());
-		$mailchimp_active_tab               = $options['mailchimp_active_tab'];
+		$mailchimp_active_tab               = $options['active_tab'];
 	  $data                               = $handler->validate( $parameters );
 
 		// if previous active tab was sync then we still want sync
@@ -329,7 +329,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		$data[ 'account_name' ]             = $account_name;
 		$data[ 'mailchimp_list_name' ]      = $mailchimp_list_name;
 		$data[ 'store_id' ]                 = $store_id;
-
 
 		return rest_ensure_response( $data );
 	}
