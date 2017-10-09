@@ -56,7 +56,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_api_key' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		'schema' => array( $this, 'get_api_key_schema' ),
 		) );
@@ -65,7 +64,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_store_info' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
 		'schema' => array( $this, 'get_store_info_schema' ),
 		) );
@@ -74,27 +72,21 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_campaign_defaults' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
-		//'schema' => array( $this, 'get_store_info_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/newsletter_setting', array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_newsletter_settings' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
-		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/newsletter_setting', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_newsletter_settings' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
-		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
 			array(
@@ -102,37 +94,21 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 				'callback'            => array( $this, 'get_sync_status' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
 			),
-		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'resync' ),
 				'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 			),
-		//'schema' => array( $this, 'get_api_key_schema' ),
 		) );
-	}
-
-	/**
-	 * Check whether a given request has permission to view payment gateways.
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
-	 */
-	public function get_items_permissions_check( $request ) {
-		// if ( ! wc_rest_check_manager_permissions( 'payment_gateways', 'read' ) ) {
-		// 	return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot list resources.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
-		// }
-		return true;
 	}
 
 	/**
 	 * Get current MailChimp settings.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_REST_Response
 	 */
 	public function get_settings( $request ) {
 		$options = get_option('mailchimp-woocommerce', array() );
@@ -151,28 +127,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
-	/**
-	 * Get the MailChimp api key schema, conforming to JSON Schema.
-	 *
-	 * @return array
-	 */
-	public function get_api_key_schema() {
-		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'store_settings',
-			'type'       => 'object',
-			'properties' => array(
-				'api_key' => array(
-					'description' => __( 'MailChimp api key.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-			),
-		);
-
-		return $this->add_additional_fields_schema( $schema );
-	}
-
 	public function update_store_info( $request ) {
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'store_info';
@@ -182,73 +136,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		update_option('mailchimp-woocommerce', $data);
 
 		return rest_ensure_response( $data );
-	}
-
-	/**
-	 * Get the payment gateway schema, conforming to JSON Schema.
-	 *
-	 * @return array
-	 */
-	public function get_store_info_schema() {
-		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'store_info',
-			'type'       => 'object',
-			'properties' => array(
-				'store_name' => array(
-					'description' => __( 'Store name.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_street' => array(
-					'description' => __( 'Store street.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_city' => array(
-					'description' => __( 'Store city.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_state' => array(
-					'description' => __( 'Store state.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_postal_code' => array(
-					'description' => __( 'Store postal code.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_country' => array(
-					'description' => __( 'Store country.', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_phone' => array(
-					'description' => __( 'Store_phone', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_locale' => array(
-					'description' => __( 'Store locale', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_currency_code' => array(
-					'description' => __( 'Store currency code', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'store_phone' => array(
-					'description' => __( 'Store phone', 'woocommerce' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-			),
-		);
-
-		return $this->add_additional_fields_schema( $schema );
 	}
 
 	public function update_campaign_defaults( $request ) {
