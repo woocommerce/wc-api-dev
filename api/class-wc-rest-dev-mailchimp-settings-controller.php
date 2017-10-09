@@ -129,15 +129,15 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	 */
 	public function get_settings( $request ) {
 		$options = get_option('mailchimp-woocommerce', array() );
-		$options['active_tab'] = isset($options['active_tab']) ? $options['active_tab'] : "api_key";
+		$options['mailchimp_active_tab'] = isset($options['mailchimp_active_tab']) ? $options['mailchimp_active_tab'] : "api_key";
 		return rest_ensure_response( $options );
 	}
 
 	public function update_api_key( $request ) {
-		$parameters               = $request->get_params();
-		$parameters['active_tab'] = 'api_key';
-		$handler                  = MailChimp_Woocommerce_Admin::connect();
-		$data                     = $handler->validate( $parameters );
+		$parameters                         = $request->get_params();
+		$parameters['mailchimp_active_tab'] = 'api_key';
+		$handler                            = MailChimp_Woocommerce_Admin::connect();
+		$data                               = $handler->validate( $parameters );
 
 		update_option('mailchimp-woocommerce', $data);
 
@@ -167,10 +167,10 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function update_store_info( $request ) {
-		$parameters               = $request->get_params();
-		$parameters['active_tab'] = 'store_info';
-		$handler                  = MailChimp_Woocommerce_Admin::connect();
-		$data                     = $handler->validate( $parameters );
+		$parameters                         = $request->get_params();
+		$parameters['mailchimp_active_tab'] = 'store_info';
+		$handler                            = MailChimp_Woocommerce_Admin::connect();
+		$data                               = $handler->validate( $parameters );
 
 		update_option('mailchimp-woocommerce', $data);
 
@@ -245,10 +245,10 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function update_campaign_defaults( $request ) {
-		$parameters               = $request->get_params();
-		$parameters['active_tab'] = 'campaign_defaults';
-		$handler                  = MailChimp_Woocommerce_Admin::connect();
-		$data                     = $handler->validate( $parameters );
+		$parameters                         = $request->get_params();
+		$parameters['mailchimp_active_tab'] = 'campaign_defaults';
+		$handler                            = MailChimp_Woocommerce_Admin::connect();
+		$data                               = $handler->validate( $parameters );
 
 		update_option('mailchimp-woocommerce', $data);
 
@@ -263,17 +263,17 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function update_newsletter_settings( $request ) {
-		$parameters               = $request->get_params();
-		$parameters['active_tab'] = 'newsletter_settings';
-		$handler                  = MailChimp_Woocommerce_Admin::connect();
-		$options                  = get_option('mailchimp-woocommerce', array());
-		$active_tab               = $options['active_tab'];
-	  $data                     = $handler->validate( $parameters );
+		$parameters                         = $request->get_params();
+		$parameters['mailchimp_active_tab'] = 'newsletter_settings';
+		$handler                            = MailChimp_Woocommerce_Admin::connect();
+		$options                            = get_option('mailchimp-woocommerce', array());
+		$mailchimp_active_tab               = $options['mailchimp_active_tab'];
+	  $data                               = $handler->validate( $parameters );
 
 		// if previous active tab was sync then we still want sync
 		// because this call is just an update and not part of setup
-		if( $active_tab == 'sync' ) {
-			$data['active_tab'] = 'sync';
+		if( $mailchimp_active_tab == 'sync' ) {
+			$data['mailchimp_active_tab'] = 'sync';
 			update_option('mailchimp-woocommerce', $data);
 		}
 
@@ -285,11 +285,11 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		$mailchimp_total_products = $mailchimp_total_orders = 0;
 		$store_id                 = mailchimp_get_store_id();
 		$product_count            = mailchimp_get_product_count();
-		$order_count = mailchimp_get_order_count();
-		$store_syncing = false;
-		$last_updated_time = get_option('mailchimp-woocommerce-resource-last-updated');
-		$account_name = 'n/a';
-		$mailchimp_list_name = 'n/a';
+		$order_count              = mailchimp_get_order_count();
+		$store_syncing            = false;
+		$last_updated_time        = get_option('mailchimp-woocommerce-resource-last-updated');
+		$account_name             = 'n/a';
+		$mailchimp_list_name      = 'n/a';
 
 		if (!empty($last_updated_time)) {
 		    $last_updated_time = mailchimp_date_local($last_updated_time);
