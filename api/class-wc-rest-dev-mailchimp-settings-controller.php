@@ -256,7 +256,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function get_newsletter_settings( $request ) {
-		$handler = MailChimp_Woocommerce_Admin::connect()
+		$handler = MailChimp_Woocommerce_Admin::connect();
 		$data    = $handler->getMailChimpLists();
 
 		return rest_ensure_response( $data );
