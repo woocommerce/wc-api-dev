@@ -107,8 +107,9 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 	/**
 	 * Get current MailChimp settings.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * @param WP_REST_Request
 	 * @return WP_REST_Response
+	 *
 	 */
 	public function get_settings( $request ) {
 		$options = get_option('mailchimp-woocommerce', array() );
@@ -116,6 +117,13 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $options );
 	}
 
+	/**
+	 * Set MailChimp API key
+	 *
+	 * @param WP_REST_Request, MailChimp API key
+	 * @return WP_REST_Response, updated MailChimp settings
+	 *
+	 */
 	public function update_api_key( $request ) {
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'api_key';
@@ -127,6 +135,13 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+	/**
+	 * Update merchants store information
+	 *
+	 * @param WP_REST_Request, store information
+	 * @return WP_REST_Response, updated MailChimp settings
+	 *
+	 */
 	public function update_store_info( $request ) {
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'store_info';
@@ -138,6 +153,16 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+
+	/**
+	 * Update campaign defaluts settings
+	 * this route we will be able to remove in future as it represent
+	 * potentialy not needed step during MailChimp setup
+	 *
+	 * @param WP_REST_Request, campaign information
+	 * @return WP_REST_Response, updated MailChimp settings
+	 *
+	 */
 	public function update_campaign_defaults( $request ) {
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'campaign_defaults';
@@ -149,6 +174,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+
+	/**
+	 * Get current newsletter settings
+	 *
+	 * @param WP_REST_Request,
+	 * @return WP_REST_Response, list of newsletters
+	 *
+	 */
 	public function get_newsletter_settings( $request ) {
 		$handler = MailChimp_Woocommerce_Admin::connect();
 		$data    = $handler->getMailChimpLists();
@@ -156,6 +189,13 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+	/**
+	 * Update newsletter settings
+	 *
+	 * @param WP_REST_Request, newsletter settings
+	 * @return WP_REST_Response, updated MailChimp settings
+	 *
+	 */
 	public function update_newsletter_settings( $request ) {
 		$parameters                         = $request->get_params();
 		$parameters['mailchimp_active_tab'] = 'newsletter_settings';
@@ -175,6 +215,13 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+	/**
+	 * Synchronization status between MailChimp plugin and Mailchimp
+	 *
+	 * @param WP_REST_Request,
+	 * @return WP_REST_Response, synchronization status
+	 *
+	 */
 	public function get_sync_status( $request ) {
 		$handler                  = MailChimp_Woocommerce_Admin::connect();
 		$mailchimp_total_products = $mailchimp_total_orders = 0;
@@ -228,6 +275,14 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 		return rest_ensure_response( $data );
 	}
 
+
+	/**
+	 * Force resynchronization
+	 *
+	 * @param WP_REST_Request,
+	 * @return WP_REST_Response, Synchronization status
+	 *
+	 */
 	public function resync( $request ) {
 		$input                         = array();
 		$input['mailchimp_active_tab'] = 'sync';
