@@ -14,38 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-#TODO:
-# * permission check
-
-class MailChimp_Woocommerce_Params_Checker extends MailChimp_Woocommerce_Admin {
-
-	/**
-	 * @return MailChimp_Woocommerce_Admin
-	 */
-	public static function connect()
-	{
-		$env = mailchimp_environment_variables();
-
-		return new self('mailchimp-woocommerce', $env->version);
-	}
-
-	public function validateApiKey( $params ) {
-		return $this->validatePostApiKey( $params );
-	}
-
-	public function validateStoreInfo( $params ) {
-		return $this->validatePostStoreInfo( $params );
-	}
-
-	public function validateCampaignDefaults( $params ) {
-		return $this->validatePostCampaignDefaults( $params );
-	}
-
-	public function validateNewsletterSettings( $params ) {
-		return $this->validatePostNewsletterSettings( $params );
-	}
-}
-
 /**
  * @package WooCommerce/API
  */
@@ -166,17 +134,18 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function update_api_key( $request ) {
-		$parameters     = $request->get_params();
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
-		$data           = $handler->validateApiKey( $parameters );
-		$options        = get_option('mailchimp-woocommerce', array());
-    $merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
-		update_option('mailchimp-woocommerce', $merged_options);
-		return rest_ensure_response( $merged_options );
+		$parameters               = $request->get_params();
+		$parameters['active_tab'] = 'api_ke';
+		$handler                  = MailChimp_Woocommerce_Admin::connect();
+		$data                     = $handler->validate( $parameters );
+
+		update_option('mailchimp-woocommerce', $data);
+
+		return rest_ensure_response( $data );
 	}
 
 	/**
-	 * Get the payment gateway schema, conforming to JSON Schema.
+	 * Get the MailChimp api key schema, conforming to JSON Schema.
 	 *
 	 * @return array
 	 */
@@ -197,14 +166,15 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 		return $this->add_additional_fields_schema( $schema );
 	}
 
-	public function update_store_info( $request ) {
-		$parameters     = $request->get_params();
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
-		$data           = $handler->validateStoreInfo( $parameters );
-		$options        = get_option('mailchimp-woocommerce', array());
-		$merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
-		update_option('mailchimp-woocommerce', $merged_options);
-		return rest_ensure_response( $merged_options );
+	public function update_store_info( $request ) {}
+		$parameters               = $request->get_params();
+		$parameters['active_tab'] = 'store_info';
+		$handler                  = MailChimp_Woocommerce_Admin::connect();
+		$data                     = $handler->validate( $parameters );
+
+		update_option('mailchimp-woocommerce', $data);
+
+		return rest_ensure_response( $data );
 	}
 
 	/**
@@ -275,45 +245,46 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function update_campaign_defaults( $request ) {
-		$parameters     = $request->get_params();
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
-		$data           = $handler->validateCampaignDefaults( $parameters );
-		$options        = get_option('mailchimp-woocommerce', array());
-		$merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
-		update_option('mailchimp-woocommerce', $merged_options);
-		return rest_ensure_response( $merged_options );
+		$parameters               = $request->get_params();
+		$parameters['active_tab'] = 'campaign_defaults';
+		$handler                  = MailChimp_Woocommerce_Admin::connect();
+		$data                     = $handler->validate( $parameters );
+
+		update_option('mailchimp-woocommerce', $data);
+
+		return rest_ensure_response( $data );
 	}
 
 	public function get_newsletter_settings( $request ) {
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
-		$data           = $handler->getMailChimpLists();
+		$handler = MailChimp_Woocommerce_Admin::connect()
+		$data    = $handler->getMailChimpLists();
+
 		return rest_ensure_response( $data );
 	}
 
 	public function update_newsletter_settings( $request ) {
-		$parameters     = $request->get_params();
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
-		$data           = $handler->validateNewsletterSettings( $parameters );
-		$options        = get_option('mailchimp-woocommerce', array());
-		$active_tab     = $options['active_tab'];
-		$merged_options = (isset($data) && is_array($data)) ? array_merge($options, $data) : $options;
+		$parameters               = $request->get_params();
+		$parameters['active_tab'] = 'newsletter_settings';
+		$handler                  = MailChimp_Woocommerce_Admin::connect();
+		$options                  = get_option('mailchimp-woocommerce', array());
+		$active_tab               = $options['active_tab'];
+	  $data                     = $handler->validate( $parameters );
 
 		// if previous active tab was sync then we still want sync
-		// because  this call is just an update and not part of setup
+		// because this call is just an update and not part of setup
 		if( $active_tab == 'sync' ) {
-			$merged_options['active_tab'] = 'sync';
+			$data['active_tab'] = 'sync';
+			update_option('mailchimp-woocommerce', $data);
 		}
-		update_option('mailchimp-woocommerce', $merged_options);
-		return rest_ensure_response( $merged_options );
+
+		return rest_ensure_response( $data );
 	}
 
-
-
 	public function get_sync_status( $request ) {
-		$handler        = MailChimp_Woocommerce_Params_Checker::connect();
+		$handler                  = MailChimp_Woocommerce_Admin::connect();
 		$mailchimp_total_products = $mailchimp_total_orders = 0;
-		$store_id = mailchimp_get_store_id();
-		$product_count = mailchimp_get_product_count();
+		$store_id                 = mailchimp_get_store_id();
+		$product_count            = mailchimp_get_product_count();
 		$order_count = mailchimp_get_order_count();
 		$store_syncing = false;
 		$last_updated_time = get_option('mailchimp-woocommerce-resource-last-updated');
@@ -364,22 +335,13 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Settings_Control
 	}
 
 	public function resync( $request ) {
-		$input = array();
+		$input                         = array();
 		$input['mailchimp_active_tab'] = 'sync';
-		$handler = MailChimp_Woocommerce_Params_Checker::connect();
-		$handler->validate( $input );
-		return $this->get_sync_status( $request );
-	}
+		$handler                       = MailChimp_Woocommerce_Admin::connect();
 
-	/**
-	 * Get any query params needed.
-	 *
-	 * @return array
-	 */
-	public function get_collection_params() {
-		return array(
-			'context' => $this->get_context_param( array( 'default' => 'view' ) ),
-		);
+		$handler->validate( $input );
+
+		return $this->get_sync_status( $request );
 	}
 
 }
