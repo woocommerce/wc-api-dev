@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package WooCommerce/API
  */
-class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Controller {
+class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -46,21 +46,21 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_settings' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			)
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/api_key', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_api_key' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/store_info', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_store_info' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		'schema' => array( $this, 'get_store_info_schema' ),
 		) );
@@ -68,37 +68,51 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_campaign_defaults' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/newsletter_setting', array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_newsletter_settings' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/newsletter_setting', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_newsletter_settings' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_sync_status' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->rest_base . '/sync', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'resync' ),
-				'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
 			),
 		) );
+	}
+
+	/**
+	 * Makes sure the current user has access to WRITE the settings APIs.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_Error|boolean
+	 */
+	private function permissions_check( $request ) {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
+			return new WP_Error( 'woocommerce_rest_cannot_edit', __( 'Sorry, you cannot edit this resource.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
 	}
 
 	/**
@@ -203,7 +217,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Dev_Settings_Con
 
 		// if previous active tab was sync then we still want sync
 		// because this call is just an update and not part of setup
-		if( $mailchimp_active_tab == 'sync' ) {
+		if( 'sync' === $mailchimp_active_tab  ) {
 			$data['mailchimp_active_tab'] = 'sync';
 		}
 

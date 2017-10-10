@@ -101,6 +101,8 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
 
+
+		// This is only for Calypso/Store. Do not merge into core.
 		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
 				include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
 		}
@@ -173,8 +175,8 @@ class WC_API_Dev {
 			$this->$controller->register_routes();
 		}
 
-		// We include it here because rest_api_init is a proper context for mocekd add_settings_error function
-		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );		
+		// We include it here because rest_api_init is a proper context for mocked add_settings_error function
+		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );
 	}
 
 	/**
