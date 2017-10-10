@@ -107,7 +107,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_Error|boolean
 	 */
-	private function permissions_check( $request ) {
+	public function permissions_check( $request ) {
 		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 			return new WP_Error( 'woocommerce_rest_cannot_edit', __( 'Sorry, you cannot edit this resource.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
 		}
@@ -213,7 +213,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 		$handler                            = MailChimp_Woocommerce_Admin::connect();
 		$options                            = get_option( 'mailchimp-woocommerce', array() );
 		$mailchimp_active_tab               = $options['active_tab'];
-	  $data                               = $handler->validate( $parameters );
+		$data                               = $handler->validate( $parameters );
 
 		// if previous active tab was sync then we still want sync
 		// because this call is just an update and not part of setup
@@ -244,31 +244,35 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 		$account_name             = 'n/a';
 		$mailchimp_list_name      = 'n/a';
 
-		if (!empty($last_updated_time)) {
-		    $last_updated_time = mailchimp_date_local( $last_updated_time );
+		if ( ! empty( $last_updated_time ) ) {
+				$last_updated_time = mailchimp_date_local( $last_updated_time );
 		}
 
 		if ( ( $mailchimp_api = mailchimp_get_api() ) && ( $store = $mailchimp_api->getStore( $store_id ) ) ) {
 
-		    $store_syncing = $store->isSyncing();
+			$store_syncing = $store->isSyncing();
 
-		    if ( ( $account_details = $handler->getAccountDetails() ) ) {
-		        $account_name = $account_details['account_name'];
-		    }
+			if ( ( $account_details = $handler->getAccountDetails() ) ) {
+				$account_name = $account_details['account_name'];
+			}
 
-		    try {
-		        $products = $mailchimp_api->products( $store_id, 1, 1 );
-		        $mailchimp_total_products = $products['total_items'];
-		        if ( $mailchimp_total_products > $product_count ) $mailchimp_total_products = $product_count;
-		    } catch (\Exception $e) { $mailchimp_total_products = 0; }
+			try {
+				$products = $mailchimp_api->products( $store_id, 1, 1 );
+				$mailchimp_total_products = $products['total_items'];
+				if ( $mailchimp_total_products > $product_count ) {
+					$mailchimp_total_products = $product_count;
+				}
+			} catch (\Exception $e) { $mailchimp_total_products = 0; }
 
-		    try {
-		        $orders = $mailchimp_api->orders( $store_id, 1, 1 );
-		        $mailchimp_total_orders = $orders['total_items'];
-		        if ( $mailchimp_total_orders > $order_count ) $mailchimp_total_orders = $order_count;
-		    } catch (\Exception $e) { $mailchimp_total_orders = 0; }
+			try {
+				$orders = $mailchimp_api->orders( $store_id, 1, 1 );
+				$mailchimp_total_orders = $orders['total_items'];
+				if ( $mailchimp_total_orders > $order_count ) {
+					$mailchimp_total_orders = $order_count;
+				}
+			} catch (\Exception $e) { $mailchimp_total_orders = 0; }
 
-		    $mailchimp_list_name = $handler->getListName();
+			$mailchimp_list_name = $handler->getListName();
 		}
 
 		$data = array();
@@ -277,7 +281,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 		$data['store_syncing']            = $store_syncing;
 		$data['mailchimp_total_products'] = $mailchimp_total_products;
 		$data['product_count']            = $product_count;
- 		$data['mailchimp_total_orders']   = $mailchimp_total_orders;
+		$data['mailchimp_total_orders']   = $mailchimp_total_orders;
 		$data['order_count']              = $order_count;
 		$data['account_name']             = $account_name;
 		$data['mailchimp_list_name']      = $mailchimp_list_name;
