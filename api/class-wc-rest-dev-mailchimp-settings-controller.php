@@ -244,10 +244,6 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 		$account_name             = 'n/a';
 		$mailchimp_list_name      = 'n/a';
 
-		if ( ! empty( $last_updated_time ) ) {
-				$last_updated_time = mailchimp_date_local( $last_updated_time );
-		}
-
 		if ( ( $mailchimp_api = mailchimp_get_api() ) && ( $store = $mailchimp_api->getStore( $store_id ) ) ) {
 
 			$store_syncing = $store->isSyncing();
@@ -277,7 +273,7 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 
 		$data = array();
 
-		$data['last_updated_time']        = $last_updated_time->format( 'D, M j, Y g:i A' );
+		$data['last_updated_time']        = wc_rest_prepare_date_response( $last_updated_time, false );
 		$data['store_syncing']            = $store_syncing;
 		$data['mailchimp_total_products'] = $mailchimp_total_products;
 		$data['product_count']            = $product_count;
