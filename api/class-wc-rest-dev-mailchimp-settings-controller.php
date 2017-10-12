@@ -235,10 +235,24 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 	 */
 	public function get_sync_status( $request ) {
 		$handler                  = MailChimp_Woocommerce_Admin::connect();
-		$mailchimp_total_products = $mailchimp_total_orders = 0;
 		$store_id                 = mailchimp_get_store_id();
+
+		// mailchimp_total_products ( calculated below ) is the number of all products that
+		// are synced with mailchimp server
+		$mailchimp_total_products = 0;
+
+		// mailchimp_total_orders ( calculated below ) is the number of all orders that
+		// are synced with mailchimp server
+		$mailchimp_total_orders = 0;
+
+		// product_count is the number of all available products ( post type product )
+		// on woocommerce site, excluding auto-draft and trash type
 		$product_count            = mailchimp_get_product_count();
+
+		// order_count is the number of all available orders ( post type shop_order )
+		// on woocommerce site, excluding auto-draft and trash type
 		$order_count              = mailchimp_get_order_count();
+
 		$store_syncing            = false;
 		$last_updated_time        = get_option( 'mailchimp-woocommerce-resource-last-updated' );
 		$account_name             = 'n/a';
@@ -255,12 +269,19 @@ class WC_REST_Dev_MailChimp_Settings_Controller extends WC_REST_Controller {
 			try {
 				$products = $mailchimp_api->products( $store_id, 1, 1 );
 				$mailchimp_total_products = $products['total_items'];
+
+				// there can be more products for given account/api_key storred on mailchim server
+				// then there is in this particular woocommerce site, coerce the mailchimp_total_products
+				// to product_count to avoid confusion
 				if ( $mailchimp_total_products > $product_count ) {
 					$mailchimp_total_products = $product_count;
 				}
 			} catch (\Exception $e) { $mailchimp_total_products = 0; }
 
 			try {
+				// there can be more orders for given account/api_key storred on mailchim server
+				// then there is in this particular woocommerce site, coerce the mailchimp_total_orders
+				// to order_count to avoid confusion
 				$orders = $mailchimp_api->orders( $store_id, 1, 1 );
 				$mailchimp_total_orders = $orders['total_items'];
 				if ( $mailchimp_total_orders > $order_count ) {
