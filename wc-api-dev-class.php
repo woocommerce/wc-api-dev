@@ -101,6 +101,12 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
 
+
+		// This is only for Calypso/Store. Do not merge into core.
+		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
+				include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
+		}
+
 		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
 		if ( defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) && true === WC_API_DEV_ENABLE_HOTFIXES ) {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
@@ -110,6 +116,7 @@ class WC_API_Dev {
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-paypal-defaults.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-allowed-redirect-hosts.php' );
 			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-masterbar-menu.php' );
+			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-no-redirect.php' );
 		}
 
 		// Classes that are not related to the API.
@@ -159,10 +166,17 @@ class WC_API_Dev {
 			'WC_REST_Dev_Payment_Gateways_Controller',
 		);
 
+		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
+				$controllers[] = 'WC_REST_Dev_MailChimp_Settings_Controller';
+		}
+
 		foreach ( $controllers as $controller ) {
 			$this->$controller = new $controller();
 			$this->$controller->register_routes();
 		}
+
+		// We include it here because rest_api_init is a proper context for mocked add_settings_error function
+		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );
 	}
 
 	/**
