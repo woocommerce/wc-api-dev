@@ -27,9 +27,5 @@ if ( file_exists( WP_PLUGIN_DIR . '/wc-api-dev/wc-api-dev.php' ) ) {
 	}
 }
 
-if ( ! defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) ){
-	define( 'WC_API_DEV_ENABLE_HOTFIXES', true );
-}
-
 // The coast is clear, load the class.
 include_once( dirname( __FILE__ ) . '/wc-api-dev-class.php' );

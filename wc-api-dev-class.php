@@ -16,12 +16,6 @@ class WC_API_Dev {
 	const WC_MIN_VERSION = '3.0.0';
 
 	/**
-	 * Paths to assets act oddly in production
-	 */
-	const MU_PLUGIN_ASSET_PATH = '/wp-content/mu-plugins/wpcomsh/vendor/woocommerce/wc-api-dev/';
-	public static $plugin_asset_path = null;
-
-	/**
 	 * Class Instance.
 	 */
 	protected static $instance = null;
@@ -100,28 +94,6 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-system-status-tools-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-payment-gateways-controller.php' );
-
-
-		// This is only for Calypso/Store. Do not merge into core.
-		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
-				include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-mailchimp-settings-controller.php' );
-		}
-
-		// Things that aren't related to a specific endpoint but to things like cross-plugin compatibility
-		if ( defined( 'WC_API_DEV_ENABLE_HOTFIXES' ) && true === WC_API_DEV_ENABLE_HOTFIXES ) {
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-jetpack-hotfixes.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-site-title.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-email-order-url.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-cheque-defaults.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-paypal-defaults.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-allowed-redirect-hosts.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-masterbar-menu.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-no-redirect.php' );
-			include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-enable-auto-update-db.php' );
-		}
-
-		// Classes that are not related to the API.
-		include_once( dirname( __FILE__ ) . '/inc/class-customizer-guided-tour.php' );
 	}
 
 	/**
@@ -167,17 +139,11 @@ class WC_API_Dev {
 			'WC_REST_Dev_Payment_Gateways_Controller',
 		);
 
-		if ( class_exists( 'MailChimp_Woocommerce' ) ) {
-				$controllers[] = 'WC_REST_Dev_MailChimp_Settings_Controller';
-		}
-
 		foreach ( $controllers as $controller ) {
 			$this->$controller = new $controller();
 			$this->$controller->register_routes();
 		}
 
-		// We include it here because rest_api_init is a proper context for mocked add_settings_error function
-		include_once( dirname( __FILE__ ) . '/hotfixes/wc-api-dev-mailchimp-add-settings-error.php' );
 	}
 
 	/**
@@ -185,13 +151,6 @@ class WC_API_Dev {
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
-			// If this is a traditionally installed plugin, set plugin_url for the proper asset path.
-			if ( file_exists( WP_PLUGIN_DIR . '/wc-api-dev/wc-api-dev.php' ) ) {
-				if ( WP_PLUGIN_DIR . '/wc-api-dev/' == plugin_dir_path( __FILE__ ) ) {
-					self::$plugin_asset_path = plugin_dir_url( __FILE__ );
-				}
-			}
-
 			self::$instance = new self();
 		}
 

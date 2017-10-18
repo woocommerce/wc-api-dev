@@ -16,5 +16,3 @@ phpunit tests for the API are located in the `tests/unit-tests/` folder and are 
 ## Translation
 
 For strings located in API endpoints, use `woocommerce` as your text-domain. These endpoints will at some point be merged back into WooCommerce Core.
-
-For other changes (such as the `hotfixes/` folder, which is being used to power an in-development interface for managing stores on WordPress.com) that are not to be merged into core, you can use `wc-api-dev` as your text-domain. These will most likely be split-out into a separate plugin soon.
