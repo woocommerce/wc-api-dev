@@ -8,7 +8,7 @@ class WC_API_Dev {
 	/**
 	 * Current version of the API plugin.
 	 */
-	const CURRENT_VERSION = '0.8.9';
+	const CURRENT_VERSION = '0.9.0';
 
 	/**
 	 * Minimum version needed to run this version of the API.
