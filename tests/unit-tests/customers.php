@@ -39,6 +39,7 @@ class Customers extends WC_REST_Unit_Test_Case {
 
 		$customer_1 = WC_Helper_Customer::create_customer();
 		WC_Helper_Customer::create_customer( 'test2', 'test2', 'test2@woo.local' );
+		$customer1_data = $customer_1->get_data();
 
 		$request = new WP_REST_Request( 'GET', '/wc/v3/customers' );
 		$request->set_query_params( array(
@@ -49,7 +50,6 @@ class Customers extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 2, count( $customers ) );
-
 		$this->assertContains( array(
 			'id'                 => $customer_1->get_id(),
 			'date_created'       => wc_rest_prepare_date_response( $customer_1->get_date_created(), false ),
@@ -89,7 +89,7 @@ class Customers extends WC_REST_Unit_Test_Case {
 			'orders_count'       => 0,
 			'total_spent'        => '0.00',
 			'avatar_url'         => $customer_1->get_avatar_url(),
-			'meta_data'          => array(),
+			'meta_data'          => $customer1_data['meta_data'],
 			'_links'             => array(
 				'self'       => array(
 					array(
@@ -133,6 +133,8 @@ class Customers extends WC_REST_Unit_Test_Case {
 		) );
 		$response = $this->server->dispatch( $request );
 		$data = $response->get_data();
+		$customer = new WC_Customer( $data['id'] );
+		$customer_data = $customer->get_data();
 
 		$this->assertEquals( 201, $response->get_status() );
 		$this->assertEquals( array(
@@ -171,7 +173,7 @@ class Customers extends WC_REST_Unit_Test_Case {
 				'country'    => '',
 			),
 			'is_paying_customer' => false,
-			'meta_data'          => array(),
+			'meta_data'          => $data['meta_data'],
 			'orders_count'       => 0,
 			'total_spent'        => '0.00',
 			'avatar_url'         => $data['avatar_url'],
@@ -234,7 +236,7 @@ class Customers extends WC_REST_Unit_Test_Case {
 				'country'    => 'US',
 			),
 			'is_paying_customer' => false,
-			'meta_data'          => array(),
+			'meta_data'          => $data['meta_data'],
 			'orders_count'       => 0,
 			'total_spent'        => '0.00',
 			'avatar_url'         => $data['avatar_url'],
@@ -314,7 +316,7 @@ class Customers extends WC_REST_Unit_Test_Case {
 				'country'    => 'US',
 			),
 			'is_paying_customer' => false,
-			'meta_data'          => array(),
+			'meta_data'          => $data['meta_data'],
 			'last_name'          => '',
 			'role'               => 'customer',
 			'username'           => 'get_customer_test',
