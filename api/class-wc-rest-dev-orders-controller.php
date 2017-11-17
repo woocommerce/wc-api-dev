@@ -75,4 +75,27 @@ class WC_REST_Dev_Orders_Controller extends WC_REST_Orders_Controller {
 
 		return $params;
 	}
+
+	/**
+	 * Get the Order's schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_item_schema() {
+		$params = parent::get_item_schema();
+
+		$params['properties']['line_items']['items']['properties']['tax_class'] = array(
+			'description' => __( 'Tax class of product.', 'woocommerce' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+		);
+		$params['properties']['line_items']['items']['properties']['price'] = array(
+			'description' => __( 'Product price.', 'woocommerce' ),
+			'type'        => 'number',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+
+		return $params;
+	}
 }
