@@ -28,4 +28,16 @@ class WC_REST_Dev_Coupons_Controller extends WC_REST_Coupons_Controller {
 	 */
 	protected $namespace = 'wc/v3';
 
+	/**
+	 * Get the Coupon's schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_item_schema() {
+		$params = parent::get_item_schema();
+
+		$params['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		return $params;
+	}
 }

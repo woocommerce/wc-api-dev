@@ -84,17 +84,25 @@ class WC_REST_Dev_Orders_Controller extends WC_REST_Orders_Controller {
 	public function get_item_schema() {
 		$params = parent::get_item_schema();
 
-		$params['properties']['line_items']['items']['properties']['tax_class'] = array(
-			'description' => __( 'Tax class of product.', 'woocommerce' ),
-			'type'        => 'string',
-			'context'     => array( 'view', 'edit' ),
-		);
-		$params['properties']['line_items']['items']['properties']['price'] = array(
-			'description' => __( 'Product price.', 'woocommerce' ),
-			'type'        => 'number',
-			'context'     => array( 'view', 'edit' ),
-			'readonly'    => true,
-		);
+		$params['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['line_items']['items']['properties']['name']['type'] = 'mixed';
+		$params['properties']['line_items']['items']['properties']['product_id']['type'] = 'mixed';
+		$params['properties']['line_items']['items']['properties']['tax_class']['type'] = 'string';
+		$params['properties']['line_items']['items']['properties']['price']['type'] = 'number';
+		$params['properties']['line_items']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['tax_lines']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['shipping_lines']['items']['properties']['method_title']['type'] = 'mixed';
+		$params['properties']['shipping_lines']['items']['properties']['method_id']['type'] = 'mixed';
+		$params['properties']['shipping_lines']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['fee_lines']['items']['properties']['name']['type'] = 'mixed';
+		$params['properties']['fee_lines']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['coupon_lines']['items']['properties']['code']['type'] = 'mixed';
+		$params['properties']['coupon_lines']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
 
 		return $params;
 	}
