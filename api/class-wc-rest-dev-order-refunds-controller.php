@@ -28,4 +28,23 @@ class WC_REST_Dev_Order_Refunds_Controller extends WC_REST_Order_Refunds_Control
 	 */
 	protected $namespace = 'wc/v3';
 
+	/**
+	 * Get the Order refund's schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_item_schema() {
+		$params = parent::get_item_schema();
+
+		$params['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		$params['properties']['line_items']['items']['properties']['name']['type'] = 'mixed';
+		$params['properties']['line_items']['items']['properties']['product_id']['type'] = 'mixed';
+		$params['properties']['line_items']['items']['properties']['tax_class']['type'] = 'string';
+		$params['properties']['line_items']['items']['properties']['price']['type'] = 'number';
+		$params['properties']['line_items']['items']['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		return $params;
+	}
+
 }

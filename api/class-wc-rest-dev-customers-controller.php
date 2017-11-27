@@ -28,4 +28,16 @@ class WC_REST_Dev_Customers_Controller extends WC_REST_Customers_Controller {
 	 */
 	protected $namespace = 'wc/v3';
 
+	/**
+	 * Get the Customer's schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_item_schema() {
+		$params = parent::get_item_schema();
+
+		$params['properties']['meta_data']['items']['properties']['value']['type'] = 'mixed';
+
+		return $params;
+	}
 }
