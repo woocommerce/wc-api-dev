@@ -29,7 +29,7 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( '/wc/v3/data/countries', $routes );
 		$this->assertArrayHasKey( '/wc/v3/data/currencies', $routes );
 		$this->assertArrayHasKey( '/wc/v3/data/currencies/current', $routes );
-		$this->assertArrayHasKey( '/wc/v3/data/currencies/(?P<currency>[\w-]{3}+)', $routes );
+		$this->assertArrayHasKey( '/wc/v3/data/currencies/(?P<currency>[\w-]{3})', $routes );
 	}
 
 	/**

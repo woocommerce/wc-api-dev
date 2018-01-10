@@ -54,7 +54,7 @@ class WC_REST_Dev_Data_Currencies_Controller extends WC_REST_Dev_Data_Controller
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
-		register_rest_route( $this->namespace, '/' . $this->rest_base . '/(?P<currency>[\w-]{3}+)', array(
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/(?P<currency>[\w-]{3})', array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_item' ),
