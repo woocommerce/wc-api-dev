@@ -83,6 +83,7 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-reports-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-settings-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-setting-options-controller.php' );
+		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-plugins-setting-options-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-zones-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-zone-locations-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-zone-methods-controller.php' );
@@ -137,6 +138,7 @@ class WC_API_Dev {
 			'WC_REST_Dev_System_Status_Tools_Controller',
 			'WC_REST_Dev_Shipping_Methods_Controller',
 			'WC_REST_Dev_Payment_Gateways_Controller',
+			'WC_REST_Dev_Plugins_Setting_Options_Controller',
 		);
 
 		foreach ( $controllers as $controller ) {
