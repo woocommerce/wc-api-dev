@@ -151,12 +151,13 @@ class WC_Tests_API_Order_Refunds extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( $data['amount'], '5.00' );
 		$this->assertEquals( $data['reason'], 'This is testing content.' );
 		$this->assertEquals( $data['refunded_by'], get_current_user_id() );
-		// $this->assertEquals( 1, count( $data['line_items'] ) );
+		$this->assertEquals( 1, count( $data['line_items'] ) );
 
 		// Verify that Note object has correct data
 		$this->assertEquals( $refund->get_amount(), '5.00' );
 		$this->assertEquals( $refund->get_reason(), 'This is testing content.' );
-		// $refund->get_items()
+		$items = $refund->get_items();
+		$this->assertEquals( 1, count( $items ) );
 
 		$refund->delete();
 	}
