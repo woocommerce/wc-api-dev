@@ -93,6 +93,13 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$this->assertGreaterThan( 1, count( $locations ) );
 		$this->assertNotEmpty( $locations[0]['code'] );
 		$this->assertNotEmpty( $locations[0]['name'] );
+		$this->assertNotEmpty( $locations[0]['currency_code'] );
+		$this->assertNotEmpty( $locations[0]['currency_pos'] );
+		$this->assertNotEmpty( $locations[0]['thousand_sep'] );
+		$this->assertNotEmpty( $locations[0]['decimal_sep'] );
+		$this->assertNotEmpty( $locations[0]['num_decimals'] );
+		$this->assertNotEmpty( $locations[0]['dimension_unit'] );
+		$this->assertNotEmpty( $locations[0]['weight_unit'] );
 		$this->assertArrayHasKey( 'states', $locations[0] );
 		$this->assertNotEmpty( $locations[0]['_links'] );
 	}
