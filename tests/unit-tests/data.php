@@ -93,19 +93,13 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$this->assertGreaterThan( 1, count( $locations ) );
 		$this->assertNotEmpty( $locations[0]['code'] );
 		$this->assertNotEmpty( $locations[0]['name'] );
-		$this->assertNotEmpty( $locations[0]['currency_code'] );
-		$this->assertNotEmpty( $locations[0]['currency_pos'] );
-		$this->assertNotEmpty( $locations[0]['thousand_sep'] );
-		$this->assertNotEmpty( $locations[0]['decimal_sep'] );
-		$this->assertNotEmpty( $locations[0]['num_decimals'] );
-		$this->assertNotEmpty( $locations[0]['dimension_unit'] );
-		$this->assertNotEmpty( $locations[0]['weight_unit'] );
 		$this->assertArrayHasKey( 'states', $locations[0] );
 		$this->assertNotEmpty( $locations[0]['_links'] );
 	}
 
 	/**
 	 * Test getting locations restricted to one country.
+	 * Use a country (US) that includes locale info
 	 * @since 3.1.0
 	 */
 	public function test_get_locations_from_country() {
@@ -117,6 +111,13 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'US', $locations['code'] );
 		$this->assertNotEmpty( $locations['name'] );
 		$this->assertCount( 54, $locations['states'] );
+		$this->assertNotEmpty( $locations['currency_code'] );
+		$this->assertNotEmpty( $locations['currency_pos'] );
+		$this->assertNotEmpty( $locations['thousand_sep'] );
+		$this->assertNotEmpty( $locations['decimal_sep'] );
+		$this->assertNotEmpty( $locations['num_decimals'] );
+		$this->assertNotEmpty( $locations['dimension_unit'] );
+		$this->assertNotEmpty( $locations['weight_unit'] );
 		$links = $response->get_links();
 		$this->assertCount( 2, $links );
 	}
