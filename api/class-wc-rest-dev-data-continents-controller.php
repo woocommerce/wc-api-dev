@@ -96,8 +96,8 @@ class WC_REST_Dev_Data_Continents_Controller extends WC_REST_Dev_Data_Controller
 		foreach ( $continent_list['countries'] as $country_code ) {
 			if ( isset( $countries[ $country_code ] ) ) {
 				$country = array(
-					'code'           => $country_code,
-					'name'           => $countries[ $country_code ],
+					'code' => $country_code,
+					'name' => $countries[ $country_code ],
 				);
 
 				// If we have detailed locale information include that in the response
