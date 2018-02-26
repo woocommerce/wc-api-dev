@@ -95,34 +95,26 @@ class WC_REST_Dev_Data_Continents_Controller extends WC_REST_Dev_Data_Controller
 		$local_countries = array();
 		foreach ( $continent_list['countries'] as $country_code ) {
 			if ( isset( $countries[ $country_code ] ) ) {
-				$locale_data = array();
-				if ( array_key_exists( $country_code, $locale_info ) ) {
-					$locale_data = $locale_info[ $country_code ];
-				}
-
-				// Defensive programming against unexpected changes in locale-info.php
-				$locale_data = wp_parse_args( $locale_data, array(
-					'currency_code'  => 'USD',
-					'currency_pos'   => 'left',
-					'decimal_sep'    => '.',
-					'dimension_unit' => 'in',
-					'num_decimals'   => 2,
-					'thousand_sep'   => ',',
-					'weight_unit'    => 'lbs',
-				) );
-
-
 				$country = array(
 					'code'           => $country_code,
-					'currency_code'  => $locale_data[ 'currency_code' ],
-					'currency_pos'   => $locale_data[ 'currency_pos' ],
-					'decimal_sep'    => $locale_data[ 'decimal_sep' ],
-					'dimension_unit' => $locale_data[ 'dimension_unit' ],
 					'name'           => $countries[ $country_code ],
-					'num_decimals'   => $locale_data[ 'num_decimals' ],
-					'thousand_sep'   => $locale_data[ 'thousand_sep' ],
-					'weight_unit'    => $locale_data[ 'weight_unit' ],
 				);
+
+				// If we have detailed locale information include that in the response
+				if ( array_key_exists( $country_code, $locale_info ) ) {
+					// Defensive programming against unexpected changes in locale-info.php
+					$country_data = wp_parse_args( $locale_info[ $country_code ], array(
+						'currency_code'  => 'USD',
+						'currency_pos'   => 'left',
+						'decimal_sep'    => '.',
+						'dimension_unit' => 'in',
+						'num_decimals'   => 2,
+						'thousand_sep'   => ',',
+						'weight_unit'    => 'lbs',
+					) );
+
+					$country = array_merge( $country, $country_data );
+				}
 
 				$local_states = array();
 				if ( isset( $states[ $country_code ] ) ) {
