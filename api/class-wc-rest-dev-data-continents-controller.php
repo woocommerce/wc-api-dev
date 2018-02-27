@@ -126,6 +126,22 @@ class WC_REST_Dev_Data_Continents_Controller extends WC_REST_Dev_Data_Controller
 					}
 				}
 				$country['states'] = $local_states;
+
+				// Allow only desired keys (e.g. filter out tax rates)
+				$allowed = array(
+					'code',
+					'currency_code',
+					'currency_pos',
+					'decimal_sep',
+					'dimension_unit',
+					'name',
+					'num_decimals',
+					'states',
+					'thousand_sep',
+					'weight_unit',
+				);
+				$country = array_intersect_key( $country, array_flip( $allowed ) );
+
 				$local_countries[] = $country;
 			}
 		}
@@ -255,9 +271,39 @@ class WC_REST_Dev_Data_Continents_Controller extends WC_REST_Dev_Data_Controller
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
+							'currency_code' => array(
+								'type'        => 'string',
+								'description' => __( 'Default ISO4127 alpha-3 currency code for the country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'currency_pos' => array(
+								'type'        => 'string',
+								'description' => __( 'Currency symbol position for this country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'decimal_sep' => array(
+								'type'        => 'string',
+								'description' => __( 'Decimal separator for displayed prices for this country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'dimension_unit' => array(
+								'type'        => 'string',
+								'description' => __( 'The unit lengths are defined in for this country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
 							'name' => array(
 								'type'        => 'string',
 								'description' => __( 'Full name of country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'num_decimals' => array(
+								'type'        => 'integer',
+								'description' => __( 'Number of decimal points shown in displayed prices for this country.', 'woocommerce' ),
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
@@ -285,6 +331,18 @@ class WC_REST_Dev_Data_Continents_Controller extends WC_REST_Dev_Data_Controller
 										),
 									),
 								),
+							),
+							'thousand_sep' => array(
+								'type'        => 'string',
+								'description' => __( 'Thousands separator for displayed prices in this country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'weight_unit' => array(
+								'type'        => 'string',
+								'description' => __( 'The unit weights are defined in for this country.', 'woocommerce' ),
+								'context'     => array( 'view' ),
+								'readonly'    => true,
 							),
 						),
 					),
