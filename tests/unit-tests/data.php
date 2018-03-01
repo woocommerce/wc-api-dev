@@ -62,6 +62,33 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$this->assertNotEmpty( $locations[0]['name'] );
 		$this->assertNotEmpty( $locations[0]['countries'] );
 		$this->assertNotEmpty( $locations[0]['_links'] );
+
+		// Make sure North America is in the response
+		$NA_index = -1;
+		foreach( $locations as $index => $continent ) {
+			if ( "NA" === $continent['code'] ) {
+				$NA_index = $index;
+			}
+		}
+		$this->assertGreaterThan( -1, $NA_index );
+
+		// Make sure the United States is in the North America part of the response
+		$US_index = -1;
+		foreach( $locations[ $NA_index ]['countries'] as $index => $country ) {
+			if ( "US" === $country['code'] ) {
+				$US_index = $index;
+			}
+		}
+		$this->assertGreaterThan( -1, $US_index );
+
+		// Lastly, assertNotEmpty US has currency, dimensions, etc.
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['currency_code'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['currency_pos'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['thousand_sep'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['decimal_sep'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['num_decimals'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['dimension_unit'] );
+		$this->assertNotEmpty( $locations[ $NA_index ]['countries'][ $US_index ]['weight_unit'] );
 	}
 
 	/**
@@ -99,6 +126,7 @@ class Data_API extends WC_REST_Unit_Test_Case {
 
 	/**
 	 * Test getting locations restricted to one country.
+	 * Use a country (US) that includes locale info
 	 * @since 3.1.0
 	 */
 	public function test_get_locations_from_country() {
