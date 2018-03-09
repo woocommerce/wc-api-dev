@@ -26,7 +26,7 @@ class WC_API_Dev_Unit_Tests_Bootstrap {
 	 * Setup the unit testing environment.
 	 */
 	public function __construct() {
-		ini_set( 'display_errors','on' );
+		ini_set( 'display_errors', 'on' );
 		error_reporting( E_ALL );
 
 		// Ensure server variable is set for WP email functions.

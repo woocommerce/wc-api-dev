@@ -161,12 +161,15 @@ class WC_Tests_API_Orders extends WC_REST_Unit_Test_Case {
 				array(
 					'method_id'    => 'flat_rate',
 					'method_title' => 'Flat rate',
-					'total'        => 10,
+					'total'        => '10',
 				),
 			),
 		) );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
+
+		$this->assertNotEmpty( $data['id'] );
+
 		$order    = wc_get_order( $data['id'] );
 		$this->assertEquals( 201, $response->get_status() );
 		$this->assertEquals( $order->get_payment_method(), $data['payment_method'] );
@@ -245,7 +248,7 @@ class WC_Tests_API_Orders extends WC_REST_Unit_Test_Case {
 				array(
 					'method_id'    => 'flat_rate',
 					'method_title' => 'Flat rate',
-					'total'        => 10,
+					'total'        => '10',
 				),
 			),
 		) );
@@ -364,6 +367,14 @@ class WC_Tests_API_Orders extends WC_REST_Unit_Test_Case {
 	 */
 	public function test_orders_batch() {
 		wp_set_current_user( $this->user );
+
+		// Delete any existing orders
+		$request  = new WP_REST_Request( 'GET', '/wc/v3/orders' );
+		$response = $this->server->dispatch( $request );
+		$orders   = $response->get_data();
+		foreach ( $orders as $order ) {
+			wp_delete_post( $order['id'], true );
+		}
 
 		$order1 = WC_Helper_Order::create_order();
 		$order2 = WC_Helper_Order::create_order();

@@ -14,7 +14,4 @@
 			<directory suffix=".php">./tests/unit-tests</directory>
 		</testsuite>
 	</testsuites>
-	<logging>
-		<log type="coverage-html" target="./tmp/coverage" charset="UTF-8" />
-	</logging>
 </phpunit>

@@ -69,8 +69,11 @@ class WC_Tests_REST_System_Status extends WC_REST_Unit_Test_Case {
 		$data        = $response->get_data();
 		$environment = (array) $data['environment'];
 
+		$system_status = new WC_REST_System_Status_Controller;
+		$environment_rows = count( $system_status->get_environment_info() );
+
 		// Make sure all expected data is present
-		$this->assertEquals( 30, count( $environment ) );
+		$this->assertEquals( $environment_rows, count( $environment ) );
 
 		// Test some responses to make sure they match up
 		$this->assertEquals( get_option( 'home' ), $environment['home_url'] );
