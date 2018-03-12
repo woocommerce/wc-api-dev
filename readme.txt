@@ -3,7 +3,7 @@ Contributors: automattic, woothemes
 Tags: woocommerce, rest-api, api
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 0.9.4
+Stable tag: 0.9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ This section describes how to install the plugin and get it working.
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 == Changelog ==
+
+= 0.9.5 =
+* Fixes `single_select_page` settings (like `woocommerce_shop_page_id`) not showing up in responses.
 
 = 0.9.4 =
 * Added currency and dimensions to selected countries in the data/continents response
