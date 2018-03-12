@@ -41,30 +41,11 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/payment_gateways' ) );
 		$gateways = $response->get_data();
 
+		$wc_gateways = WC()->payment_gateways->payment_gateways();
+
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertContains( array(
-			'id'                 => 'cheque',
-			'title'              => 'Check payments',
-			'description'        => 'Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.',
-			'order'              => '',
-			'enabled'            => true,
-			'method_title'       => 'Check payments',
-			'method_description' => 'Allows check payments. Why would you take checks in this day and age? Well you probably would not, but it does allow you to make test purchases for testing order emails and the success pages.',
-			'method_supports'    => array( 'products' ),
-			'settings'           => array_diff_key( $this->get_settings( 'WC_Gateway_Cheque' ), array( 'enabled' => false, 'description' => false ) ),
-			'_links' => array(
-				'self'       => array(
-					array(
-						'href' => rest_url( '/wc/v3/payment_gateways/cheque' ),
-					),
-				),
-				'collection' => array(
-					array(
-						'href' => rest_url( '/wc/v3/payment_gateways' ),
-					),
-				),
-			),
-		), $gateways );
+		$this->assertEquals( count( $wc_gateways ), count( $gateways ) );
+		$this->assertNotEmpty( $gateways[0]['id'] );
 	}
 
 	/**
@@ -90,17 +71,8 @@ class Payment_Gateways extends WC_REST_Unit_Test_Case {
 		$paypal   = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( array(
-			'id'                 => 'paypal',
-			'title'              => 'PayPal',
-			'description'        => "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.",
-			'order'              => '',
-			'enabled'            => true,
-			'method_title'       => 'PayPal',
-			'method_description' => 'PayPal Standard sends customers to PayPal to enter their payment information. PayPal IPN requires fsockopen/cURL support to update order statuses after payment. Check the <a href="http://example.org/wp-admin/admin.php?page=wc-status">system status</a> page for more details.',
-			'method_supports'    => array( 'products', 'refunds' ),
-			'settings'           => array_diff_key( $this->get_settings( 'WC_Gateway_Paypal' ), array( 'enabled' => false, 'description' => false ) ),
-		), $paypal );
+		$this->assertEquals( 'paypal', $paypal['id'] );
+		$this->assertEquals( 'PayPal', $paypal['title'] );
 	}
 
 	/**

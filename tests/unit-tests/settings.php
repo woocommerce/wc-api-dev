@@ -173,17 +173,19 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$data = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
+
 		$this->assertContains( array(
-    		'id' => 'woocommerce_demo_store',
-			'label' => 'Store notice',
-			'description' => 'Enable site-wide store notice text',
-			'type' => 'checkbox',
-			'default' => 'no',
-			'value' => 'no',
+    		'id' => 'woocommerce_price_num_decimals',
+			'label' => 'Number of decimals',
+			'description' => 'This sets the number of decimal points shown in displayed prices.',
+			'type' => 'number',
+			'default' => 2,
+			'tip' => 'This sets the number of decimal points shown in displayed prices.',
+			'value' => 2,
 			'_links' => array(
 				'self' => array(
 					array(
-						'href' => rest_url( '/wc/v3/settings/general/woocommerce_demo_store' ),
+						'href' => rest_url( '/wc/v3/settings/general/woocommerce_price_num_decimals' ),
 					),
 				),
 				'collection' => array(
@@ -725,12 +727,34 @@ class Settings extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * All settings using the 'image_width' type have been moved to the customizer.
+	 * This adds one back so we can still test the validation in `test_validation_image_width`.
+	 */
+	public function add_shop_thumbnail_image_size_setting( $settings ) {
+		$settings[] = array(
+			'title'    => __( 'Product thumbnails', 'woocommerce' ),
+			'desc'     => __( 'This size is usually used for the gallery of images on the product page. (W x H)', 'woocommerce' ),
+			'id'       => 'shop_thumbnail_image_size',
+			'css'      => '',
+			'type'     => 'image_width',
+			'default'  => array(
+				'width'  => '180',
+				'height' => '180',
+				'crop'   => 1,
+			),
+			'desc_tip' => true,
+		);
+		return $settings;
+	}
+	/**
 	 * Test validation of image_width.
 	 *
 	 * @since 3.0.0
 	 */
 	public function test_validation_image_width() {
 		wp_set_current_user( $this->user );
+
+		add_filter( 'woocommerce_product_settings', array( $this, 'add_shop_thumbnail_image_size_setting' ) );
 
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', sprintf( '/wc/v3/settings/%s/%s', 'products', 'shop_thumbnail_image_size' ) ) );
 		$setting  = $response->get_data();
