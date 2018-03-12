@@ -152,7 +152,16 @@ class WC_REST_Dev_Setting_Options_Controller extends WC_REST_Setting_Options_Con
 			} elseif ( 'single_select_country' === $setting['type'] ) {
 				$setting['type']    = 'select';
 				$setting['options'] = $this->get_countries_and_states();
+			} elseif ( 'single_select_page' === $setting['type'] ) {
+				$pages   = get_pages( array( 'sort_column' => 'menu_order', 'sort_order' => 'ASC', 'hierarchical' => 0 ) );
+				$options = array();
+				foreach ( $pages as $page ) {
+					$options[ $page->ID ] =  ! empty( $page->post_title ) ? $page->post_title : '#' . $page->ID;
+				}
+				$setting['type']    = 'select';
+				$setting['options'] = $options;
 			}
+
 
 			$filtered_settings[] = $setting;
 		}

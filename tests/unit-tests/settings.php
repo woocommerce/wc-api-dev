@@ -803,4 +803,17 @@ class Settings extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'US:OR', $setting['options'] );
 	}
 
+	/**
+	 * Test to make sure the settings that are of type `single_select_page` are
+	 * present in the response (as type select).
+	 *
+	 */
+	public function test_woocommerce_single_select_page_setting_exists() {
+		wp_set_current_user( $this->user );
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/settings/products/woocommerce_shop_page_id' ) );
+		$setting  = $response->get_data();
+
+		$this->assertEquals( 'select', $setting['type'] );
+	}
+
 }
