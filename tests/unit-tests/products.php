@@ -96,8 +96,6 @@ class Products_API extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 'Product 2', $products[0]['name'] );
-
-
 	}
 
 	/**
