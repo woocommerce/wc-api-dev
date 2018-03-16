@@ -74,6 +74,29 @@ class WC_REST_Dev_Products_Controller extends WC_REST_Products_Controller {
 	}
 
 	/**
+	 * Make extra product orderby features supported by WooCommerce available to the WC API. 
+	 * This includes 'price', 'popularity', and 'rating'.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return array
+	 */
+	protected function prepare_objects_query( $request ) {
+		$args = parent::prepare_objects_query( $request );
+
+		$orderby = $request->get_param( 'orderby' );
+		$order = $request->get_param( 'order' );
+
+		$ordering_args   = WC()->query->get_catalog_ordering_args( $orderby, $order );
+		$args['orderby'] = $ordering_args['orderby'];
+		$args['order']   = $ordering_args['order'];
+		if ( $ordering_args['meta_key'] ) {
+			$args['meta_key'] = $ordering_args['meta_key'];
+		}
+
+		return $args;
+	}
+
+	/**
 	 * Set product images.
 	 *
 	 * @throws WC_REST_Exception REST API exceptions.
@@ -132,6 +155,17 @@ class WC_REST_Dev_Products_Controller extends WC_REST_Products_Controller {
 		}
 
 		return $product;
+	}
+
+	/**
+	 * Add new options for 'orderby' to the collection params.
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+		$params = parent::get_collection_params();
+		$params['orderby']['enum'] = array_merge( $params['orderby']['enum'], array( 'price', 'popularity', 'rating' ) );
+		return $params;
 	}
 
 	/**
