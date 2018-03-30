@@ -41,10 +41,11 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/data' ) );
 		$index = $response->get_data();
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertCount( 3, $index );
+		$this->assertCount( 4, $index );
 		$this->assertEquals( 'continents', $index[0]['slug'] );
 		$this->assertEquals( 'countries', $index[1]['slug'] );
-		$this->assertEquals( 'currencies', $index[2]['slug'] );
+		$this->assertEquals( 'counts', $index[2]['slug'] );
+		$this->assertEquals( 'currencies', $index[3]['slug'] );
 	}
 
 	/**
@@ -261,5 +262,4 @@ class Data_API extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', '/wc/v3/data/currencies' ) );
 		$this->assertEquals( 401, $response->get_status() );
 	}
-
 }
