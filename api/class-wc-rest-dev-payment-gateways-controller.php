@@ -65,6 +65,43 @@ class WC_REST_Dev_Payment_Gateways_Controller extends WC_REST_Payment_Gateways_C
 	}
 
 	/**
+	 * Return settings associated with this payment gateway.
+	 *
+	 * @param WC_Payment_Gateway $gateway
+	 *
+	 * @return array
+	 */
+	public function get_settings( $gateway ) {
+		$settings = array();
+		$gateway->init_form_fields();
+		foreach ( $gateway->form_fields as $id => $field ) {
+			// Make sure we at least have a title and type
+			if ( empty( $field['title'] ) || empty( $field['type'] ) ) {
+				continue;
+			}
+			// Ignore 'enabled' and 'description' which get included elsewhere.
+			if ( in_array( $id, array( 'enabled', 'description' ) ) ) {
+				continue;
+			}
+			$data = array(
+				'id'          => $id,
+				'label'       => empty( $field['label'] ) ? $field['title'] : $field['label'],
+				'description' => empty( $field['description'] ) ? '' : $field['description'],
+				'type'        => $field['type'],
+				'value'       => empty( $gateway->settings[ $id ] ) ? '' : $gateway->settings[ $id ],
+				'default'     => empty( $field['default'] ) ? '' : $field['default'],
+				'tip'         => empty( $field['description'] ) ? '' : $field['description'],
+				'placeholder' => empty( $field['placeholder'] ) ? '' : $field['placeholder'],
+			);
+			if ( ! empty( $field['options'] ) ) {
+				$data['options'] = $field['options'];
+			}
+			$settings[ $id ] = $data;
+		}
+		return $settings;
+	}
+
+	/**
 	 * Get the payment gateway schema, conforming to JSON Schema.
 	 *
 	 * @return array
