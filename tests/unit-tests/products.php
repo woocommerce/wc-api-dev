@@ -54,6 +54,107 @@ class Products_API extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Create three assorted products suitable for testing new orderby features in API queries.
+	 *
+	 * @since 3.4.0
+	 */
+	protected function create_dummy_orderby_products() {
+		// Create three products with different prices and sales.
+		$product1 = new WC_Product();
+		$product1->set_name( 'Product 1' );
+		$product1->set_regular_price( '5.00' );
+		$product1->save();
+		update_post_meta( $product1->get_id(), 'total_sales', 5 );
+
+		$product2 = new WC_Product();
+		$product2->set_name( 'Product 2' );
+		$product2->set_regular_price( '10.00' );
+		$product2->save();
+		update_post_meta( $product2->get_id(), 'total_sales', 8 );
+
+		$product3 = new WC_Product();
+		$product3->set_name( 'Product 3' );
+		$product3->set_regular_price( '1.00' );
+		$product3->save();
+		update_post_meta( $product3->get_id(), 'total_sales', 2 );
+	}
+
+	/**
+	 * Test orderby price descending.
+	 *
+	 * @since 3.4.0
+	 */
+	public function test_get_products_orderby_price_desc() {
+		wp_set_current_user( $this->user );
+		$this->create_dummy_orderby_products();
+
+		// Order by price descending.
+		$request = new WP_REST_Request( 'GET', '/wc/v3/products' );
+		$request->set_query_params( array( 'orderby' => 'price', 'order' => 'desc' ) );
+		$response = $this->server->dispatch( $request );
+		$products = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 'Product 2', $products[0]['name'] );
+	}
+
+	/**
+	 * Test orderby price ascending.
+	 *
+	 * @since 3.4.0
+	 */
+	public function test_get_products_orderby_price_asc() {
+		wp_set_current_user( $this->user );
+		$this->create_dummy_orderby_products();
+
+		// Order by price ascending.
+		$request = new WP_REST_Request( 'GET', '/wc/v3/products' );
+		$request->set_query_params( array( 'orderby' => 'price', 'order' => 'asc' ) );
+		$response = $this->server->dispatch( $request );
+		$products = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 'Product 3', $products[0]['name'] );
+	}
+
+	/**
+	 * Test orderby sales.
+	 *
+	 * @since 3.4.0
+	 */
+	public function test_get_products_orderby_sales() {
+		wp_set_current_user( $this->user );
+		$this->create_dummy_orderby_products();
+
+		// Order by sales.
+		$request = new WP_REST_Request( 'GET', '/wc/v3/products' );
+		$request->set_query_params( array( 'orderby' => 'popularity' ) );
+		$response = $this->server->dispatch( $request );
+		$products = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 'Product 2', $products[0]['name'] );
+	}
+
+	/**
+	 * Test orderby rating. This just checks it's a valid, registered option and is further tested in class-wc-tests-wc-query.php.
+	 *
+	 * @since 3.4.0
+	 */
+	public function test_get_products_orderby_rating() {
+		wp_set_current_user( $this->user );
+		$this->create_dummy_orderby_products();
+
+		// Order by sales.
+		$request = new WP_REST_Request( 'GET', '/wc/v3/products' );
+		$request->set_query_params( array( 'orderby' => 'rating' ) );
+		$response = $this->server->dispatch( $request );
+		$products = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+	}
+
+	/**
 	 * Test getting products without permission.
 	 *
 	 * @since 3.0.0
