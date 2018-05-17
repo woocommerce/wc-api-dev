@@ -129,6 +129,7 @@ class WC_API_Dev_Unit_Tests_Bootstrap {
 		
 		// Added helpers
 		require_once( $this->tests_dir  . '/framework/helpers/class-wc-helper-order-note.php' );
+		require_once( $this->tests_dir  . '/framework/helpers/class-wc-helper-order-refund.php' );
 	}
 
 	/**
