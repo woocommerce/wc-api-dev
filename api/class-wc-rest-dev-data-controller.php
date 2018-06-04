@@ -99,10 +99,6 @@ class WC_REST_Dev_Data_Controller extends WC_REST_Controller {
 				'description' => __( 'List of supported states in a given country.', 'woocommerce' ),
 			),
 			array(
-				'slug'        => 'counts',
-				'description' => __( 'Information about the amount of various objects on this site.', 'woocommerce' ),
-			),
-			array(
 				'slug'        => 'currencies',
 				'description' => __( 'List of supported currencies.', 'woocommerce' ),
 			),
