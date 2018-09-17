@@ -14,17 +14,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * REST API Report Top Sellers controller class.
- *
- * @package WooCommerce/API
- */
-class WC_REST_Dev_Report_Top_Sellers_Controller extends WC_REST_Report_Top_Sellers_Controller {
-
+if ( class_exists( 'WC_REST_Report_Top_Sellers_Controller' ) ) {
 	/**
-	 * Endpoint namespace.
+	 * REST API Report Top Sellers controller class.
 	 *
-	 * @var string
+	 * @package WooCommerce/API
 	 */
-	protected $namespace = 'wc/v3';
+	class WC_REST_Dev_Report_Top_Sellers_Controller extends WC_REST_Report_Top_Sellers_Controller {
+
+		/**
+		 * Endpoint namespace.
+		 *
+		 * @var string
+		 */
+		protected $namespace = 'wc/v3';
+	}
 }

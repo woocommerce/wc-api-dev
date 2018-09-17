@@ -14,17 +14,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * REST API Report Sales controller class.
- *
- * @package WooCommerce/API
- */
-class WC_REST_Dev_Report_Sales_Controller extends WC_REST_Report_Sales_Controller {
-
+if ( class_exists( 'WC_REST_Report_Sales_Controller' ) ) {
 	/**
-	 * Endpoint namespace.
+	 * REST API Report Sales controller class.
 	 *
-	 * @var string
+	 * @package WooCommerce/API
 	 */
-	protected $namespace = 'wc/v3';
+	class WC_REST_Dev_Report_Sales_Controller extends WC_REST_Report_Sales_Controller {
+
+		/**
+		 * Endpoint namespace.
+		 *
+		 * @var string
+		 */
+		protected $namespace = 'wc/v3';
+	}
+
 }

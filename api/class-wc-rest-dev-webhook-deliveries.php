@@ -14,18 +14,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * REST API Webhook Deliveries controller class.
- *
- * @package WooCommerce/API
- */
-class WC_REST_Dev_Webhook_Deliveries_Controller extends WC_REST_Webhook_Deliveries_Controller {
-
+if ( class_exists( 'WC_REST_Webhook_Deliveries_Controller' ) ) {
 	/**
-	 * Endpoint namespace.
+	 * REST API Webhook Deliveries controller class.
 	 *
-	 * @var string
+	 * @package WooCommerce/API
 	 */
-	protected $namespace = 'wc/v3';
+	class WC_REST_Dev_Webhook_Deliveries_Controller extends WC_REST_Webhook_Deliveries_Controller {
 
+		/**
+		 * Endpoint namespace.
+		 *
+		 * @var string
+		 */
+		protected $namespace = 'wc/v3';
+
+	}
 }
