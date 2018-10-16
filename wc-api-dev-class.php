@@ -88,7 +88,6 @@ class WC_API_Dev {
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-shipping-zone-methods-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-tax-classes-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-taxes-controller.php' );
-		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-webhook-deliveries.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-webhooks-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-system-status-controller.php' );
 		include_once( dirname( __FILE__ ) . '/api/class-wc-rest-dev-system-status-tools-controller.php' );
@@ -131,7 +130,6 @@ class WC_API_Dev {
 			'WC_REST_Dev_Shipping_Zone_Methods_Controller',
 			'WC_REST_Dev_Tax_Classes_Controller',
 			'WC_REST_Dev_Taxes_Controller',
-			'WC_REST_Dev_Webhook_Deliveries_Controller',
 			'WC_REST_Dev_Webhooks_Controller',
 			'WC_REST_Dev_System_Status_Controller',
 			'WC_REST_Dev_System_Status_Tools_Controller',
