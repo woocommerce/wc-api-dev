@@ -3,11 +3,11 @@
  * Plugin Name: WooCommerce API Dev
  * Plugin URI: https://woocommerce.com/
  * Description: A feature plugin providing a bleeding edge version of the WooCommerce REST API.
- * Version: 0.9.9
+ * Version: 1.0.0
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Requires at least: 4.4
- * Tested up to: 4.8.2
+ * Tested up to: 5.1.1
  */
 
 if ( ! file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) ) {

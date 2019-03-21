@@ -8,7 +8,7 @@ class WC_API_Dev {
 	/**
 	 * Current version of the API plugin.
 	 */
-	const CURRENT_VERSION = '0.9.9';
+	const CURRENT_VERSION = '1.0.0';
 
 	/**
 	 * Minimum version needed to run this version of the API.
@@ -32,7 +32,6 @@ class WC_API_Dev {
 	 */
 	function init() {
 		if ( $this->is_woocommerce_valid() ) {
-			$this->includes();
 			add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
 		}
 	}
@@ -101,6 +100,7 @@ class WC_API_Dev {
 	 * New endpoints/controllers can be added here.
 	 */
 	public function register_routes() {
+		$this->includes();
 		$controllers = array(
 			'WC_REST_Dev_Coupons_Controller',
 			'WC_REST_Dev_Customer_Downloads_Controller',
